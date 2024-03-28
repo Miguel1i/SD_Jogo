@@ -1,8 +1,9 @@
+import time
 import pygame
 from gamemech import GameMech
 
 
-class Player(pygame.sprite.DirtySprite):
+class PlayerKEY(pygame.sprite.DirtySprite):
 
     def __init__(self, pos_x: int, pos_y: int, size: int, id: int, name: str, skin: str, *groups):
         super().__init__(*groups)
@@ -40,22 +41,22 @@ class Player(pygame.sprite.DirtySprite):
 
         key = pygame.key.get_pressed()
 
-        if key[pygame.K_LEFT]:
+        if key[pygame.K_a]:
             new_pos = list(gm.execute(self.id, "LEFT"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
-        if key[pygame.K_RIGHT]:
+        if key[pygame.K_d]:
             new_pos = list(gm.execute(self.id, "RIGHT"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
-        if key[pygame.K_UP]:
+        if key[pygame.K_w]:
             new_pos = list(gm.execute(self.id, "UP"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
-        if key[pygame.K_DOWN]:
+        if key[pygame.K_s]:
             new_pos = list(gm.execute(self.id, "DOWN"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
