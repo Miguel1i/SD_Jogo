@@ -1,11 +1,10 @@
-import time
 import pygame
 from gamemech import GameMech
 
 
 class PlayerKEY(pygame.sprite.DirtySprite):
 
-    def __init__(self, pos_x: int, pos_y: int, size: int, id: int, name: str, skin: str, *groups):
+    def __init__(self, pos_x: int, pos_y: int, size: int, player_id: int, name: str, skin: str, *groups):
         super().__init__(*groups)
         self.size = size
         self.image = pygame.image.load(skin)
@@ -15,7 +14,7 @@ class PlayerKEY(pygame.sprite.DirtySprite):
         self.image = pygame.transform.scale(self.image, self.new_size)
         self.rect = pygame.rect.Rect((pos_x * size, pos_y * size), self.image.get_size())
         self.pos = (pos_x, pos_y)
-        self.id = id
+        self.player_id = player_id
         self.name = name
         self.score = 0
 
@@ -29,7 +28,7 @@ class PlayerKEY(pygame.sprite.DirtySprite):
         return self.score
 
     def get_id(self):
-        return self.id
+        return self.player_id
 
     def get_name(self):
         return self.name
@@ -42,22 +41,22 @@ class PlayerKEY(pygame.sprite.DirtySprite):
         key = pygame.key.get_pressed()
 
         if key[pygame.K_a]:
-            new_pos = list(gm.execute(self.id, "LEFT"))
+            new_pos = list(gm.execute(self.player_id, "LEFT"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
         if key[pygame.K_d]:
-            new_pos = list(gm.execute(self.id, "RIGHT"))
+            new_pos = list(gm.execute(self.player_id, "RIGHT"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
         if key[pygame.K_w]:
-            new_pos = list(gm.execute(self.id, "UP"))
+            new_pos = list(gm.execute(self.player_id, "UP"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
         if key[pygame.K_s]:
-            new_pos = list(gm.execute(self.id, "DOWN"))
+            new_pos = list(gm.execute(self.player_id, "DOWN"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size

@@ -18,8 +18,9 @@ class GameMech:
         self.time = datetime.datetime.now()
         self.end_time = datetime.timedelta(seconds=MATCH_TIME) + self.time
         self.max_points = MAX_POINTS
+        self.golden_egg = False
 
-    def generate_world(self, nr_x: int, nr_y: int):
+    def generate_world(self, nr_x: int, nr_y: int) -> None:
         self.world = {(x, y): [] for x in range(nr_x) for y in range(nr_y)}
         self.bushes = {(x, y): [] for x in range(nr_x) for y in range(nr_y)}
 
@@ -54,6 +55,8 @@ class GameMech:
         print(f"{player.get_name()} -> {player.get_score()}")
         self.eggs.pop(egg.get_id())
         self.world[egg.get_pos()].remove(["egg", egg.get_id()])
+        if egg.get_value() == 2:
+            self.golden_egg = False
 
     def winner(self):
         for player_id in self.players:
@@ -69,7 +72,8 @@ class GameMech:
     def determine_egg(self):
 
         current_points = sum(self.players[player_id][0].get_score() for player_id in self.players)
-        if current_points != 0 and current_points % 10 == 0:
+        if current_points != 0 and current_points % 10 == 0 and self.golden_egg is False:
+            self.golden_egg = True
             return GOLDEN_EGG, 2
 
         all_negative = sum(-1 for egg_id in self.eggs if self.eggs[egg_id][0].get_value() == -1)
@@ -107,7 +111,6 @@ class GameMech:
                 new_pos: tuple = (
                     pos_anterior[0] + directions[direction][0], pos_anterior[1] + directions[direction][1])
                 mundo_pos = self.world[new_pos]
-
                 if not mundo_pos or mundo_pos[0][0] != "obst" and mundo_pos[0][0] != "player":
                     self.world[pos_anterior].remove(["player", nome, player_id])
                     self.world[new_pos].append(["player", nome, player_id])

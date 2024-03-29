@@ -1,5 +1,4 @@
 import pygame
-from constants import EGG_POSITIVE
 from gamemech import GameMech
 
 

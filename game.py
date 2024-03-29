@@ -140,7 +140,6 @@ class Game(object):
                 if event.type == pygame.QUIT:
                     end_game = True
 
-            # Draw grass sprites onto the screen
             self.grass.draw(self.screen)
 
             self.players.update(self, self.gm)
@@ -151,7 +150,6 @@ class Game(object):
 
             self.eggs.draw(self.screen)
 
-            # Blit the grid surface onto the screen
             self.screen.blit(self.grid_surface, (0, 0))
             self.check_collisions()
 
@@ -160,8 +158,6 @@ class Game(object):
 
             self.draw_scoreboard()
             self.draw_timer()
-
-            # Update only the region where the panel is located
 
             pygame.display.update(rects)
 
