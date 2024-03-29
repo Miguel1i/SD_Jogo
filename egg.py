@@ -4,7 +4,7 @@ from gamemech import GameMech
 
 
 class Egg(pygame.sprite.DirtySprite):
-    def __init__(self, pos_x: int, pos_y: int, size: int, skin: str, id: int, *groups):
+    def __init__(self, pos_x: int, pos_y: int, size: int, skin: str, egg_id: int, value: int, *groups):
         super().__init__(*groups)
         self.size = size
         self.image = pygame.image.load(skin)
@@ -13,12 +13,12 @@ class Egg(pygame.sprite.DirtySprite):
         self.new_size = (int(initial_size[0] * size_rate), int(initial_size[1] * size_rate))
         self.image = pygame.transform.scale(self.image, self.new_size)
         self.rect = pygame.rect.Rect((pos_x * size, pos_y * size), self.image.get_size())
-        self.value = 1
-        self.id = id
+        self.value = value
+        self.egg_id = egg_id
         self.pos = (pos_x, pos_y)
 
     def get_id(self):
-        return self.id
+        return self.egg_id
 
     def get_pos(self):
         return self.pos

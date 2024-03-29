@@ -12,5 +12,5 @@ GRID_SIZE: int = 35
 GRID_X: int = 20
 GRID_Y: int = 20
 GAME_TICK: int = 15
-MATCH_TIME: int = 180
+MATCH_TIME: int = 5
 MAX_POINTS: int = 30

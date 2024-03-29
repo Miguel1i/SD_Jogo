@@ -1,5 +1,5 @@
 import random
-from constants import MATCH_TIME, MAX_POINTS
+from constants import MATCH_TIME, MAX_POINTS, EGG_NEGATIVE, EGG_POSITIVE, GOLDEN_EGG
 import datetime
 
 
@@ -32,17 +32,15 @@ class GameMech:
                     self.world[(x, y)].append(["obst", "bush", nr_bushes])
                     nr_bushes += 1
 
-    def calculate_egg_spawn(self, nr_eggs: int, egg_id: int):
+    def calculate_egg_spawn(self, nr_eggs: int):
         for _ in range(nr_eggs):
             while True:
                 x = random.randint(1, self.x_max - 2)
                 y = random.randint(1, self.y_max - 2)
                 if not self.world[(x, y)]:
-                    self.eggs[egg_id] = ["egg", (x, y)]
-                    self.world[(x, y)].append(["egg", egg_id])
                     return x, y
 
-    def add_player(self, player):
+    def add_player(self, player) -> None:
         if player.get_name() not in self.players and player.get_pos():
             self.players[player.get_id()] = [player, player.get_pos()]
             self.world[player.get_pos()].append(["player", player.get_name(), player.get_id()])
@@ -59,13 +57,44 @@ class GameMech:
 
     def winner(self):
         for player_id in self.players:
-            if self.players[player_id][0].get_score() >= self.max_points or self.calc_time():
+            if self.players[player_id][0].get_score() >= self.max_points or self.check_time() >= self.end_time:
                 return True
 
-    def calc_time(self):
+    def get_score(self, player_id):
+        return self.players[player_id][0].get_score()
+
+    def update_score(self, player_id, score):
+        self.players[player_id][0].set_score(score)
+
+    def determine_egg(self):
+
+        current_points = sum(self.players[player_id][0].get_score() for player_id in self.players)
+        if current_points != 0 and current_points % 10 == 0:
+            return GOLDEN_EGG, 2
+
+        all_negative = sum(-1 for egg_id in self.eggs if self.eggs[egg_id][0].get_value() == -1)
+        all_positive = sum(1 for egg_id in self.eggs if self.eggs[egg_id][0].get_value() == 1)
+
+        if all_negative == -3:
+            return EGG_POSITIVE, 1
+        if all_positive == 4:
+            return EGG_NEGATIVE, -1
+
+        egg = random.choice([EGG_NEGATIVE, EGG_POSITIVE])
+        return (egg, 1) if egg == EGG_POSITIVE else (egg, -1)
+
+    def check_time(self):
         self.time = datetime.datetime.now()
-        if self.time >= self.end_time:
-            return True
+        return self.time
+
+    def calc_time(self):
+        delta = self.end_time - datetime.datetime.now()
+        total_seconds = delta.total_seconds()
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        if delta <= datetime.timedelta():
+            return "0:00"
+        return f"{int(minutes)}:{int(seconds):02}"
 
     def execute(self, player_id: int, direction: str):
 
@@ -78,6 +107,7 @@ class GameMech:
                 new_pos: tuple = (
                     pos_anterior[0] + directions[direction][0], pos_anterior[1] + directions[direction][1])
                 mundo_pos = self.world[new_pos]
+
                 if not mundo_pos or mundo_pos[0][0] != "obst" and mundo_pos[0][0] != "player":
                     self.world[pos_anterior].remove(["player", nome, player_id])
                     self.world[new_pos].append(["player", nome, player_id])
@@ -86,4 +116,5 @@ class GameMech:
                 else:
                     self.players[player_id] = [player, pos_anterior]
                     old_pos = tuple(pos_anterior)
+
                     return old_pos
