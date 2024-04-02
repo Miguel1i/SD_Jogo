@@ -1,6 +1,6 @@
 import pygame
 from gamemech import GameMech
-from constants import GRID_SIZE, GRID_X, GRID_Y, GAME_TICK, PLAYER_1, PLAYER_2
+from constants import GRID_SIZE, GRID_X, GRID_Y, GAME_TICK, PLAYER_1, PLAYER_2, FONT, FONT_SIZE, WHITE, TRANSPARENT
 import player
 import player_key
 import egg
@@ -38,7 +38,7 @@ class Game(object):
         self.background = self.background.convert()
         # Grid
         self.grid_surface = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
-        self.grid_surface.fill((0, 0, 0, 0))
+        self.grid_surface.fill(TRANSPARENT)
         self.grid_size = GRID_SIZE
         self.draw_grid(self.grid_surface, self.width, self.height, self.grid_size, (2, 150, 72))
         # Name of the game
@@ -51,12 +51,12 @@ class Game(object):
         self.screen.blit(text_surface, (x, y))
 
     def draw_panel(self, panel_text, x, y):
-        font = pygame.font.SysFont("Lucida sans", 20)
+        font = pygame.font.SysFont(FONT, FONT_SIZE)
         text_width, text_height = font.size(panel_text)
         panel_surface = pygame.Surface((max(self.width, text_width), max(20, text_height)), pygame.SRCALPHA)
-        panel_surface.fill((0, 0, 0, 0))
+        panel_surface.fill(TRANSPARENT)
         self.screen.blit(panel_surface, (x, y))
-        self.draw_text(panel_text, font, (0, 0, 0), x, y)
+        self.draw_text(panel_text, font, WHITE, x, y)
         pygame.display.update(pygame.Rect(x, y, max(self.width, text_width), max(20, text_height)))
 
     def draw_scoreboard(self):
