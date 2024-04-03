@@ -1,6 +1,7 @@
 import pygame
 from gamemech import GameMech
-from constants import GRID_SIZE, GRID_X, GRID_Y, GAME_TICK, PLAYER_1, PLAYER_2, FONT, FONT_SIZE, WHITE, TRANSPARENT
+from constants import GRID_SIZE, GRID_X, GRID_Y, GAME_TICK, PLAYER_1, PLAYER_2, FONT, FONT_SIZE, WHITE, TRANSPARENT, \
+    GAME_ICON
 import player
 import player_key
 import egg
@@ -36,6 +37,8 @@ class Game(object):
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
+        game_icon = pygame.image.load(GAME_ICON)
+        pygame.display.set_icon(game_icon)
         # Grid
         self.grid_surface = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
         self.grid_surface.fill(TRANSPARENT)

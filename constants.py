@@ -8,6 +8,7 @@ GRASS_D: str = "sprites/grass_pattern_D.png"
 EGG_POSITIVE: str = "sprites/egg_positive.png"
 EGG_NEGATIVE: str = "sprites/egg_negative.png"
 GOLDEN_EGG: str = "sprites/golden_egg.png"
+GAME_ICON: str = "sprites/game_icon.jpg"
 GRID_SIZE: int = 35
 GRID_X: int = 20
 GRID_Y: int = 20
