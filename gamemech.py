@@ -38,8 +38,16 @@ class GameMech:
             while True:
                 x = random.randint(1, self.x_max - 2)
                 y = random.randint(1, self.y_max - 2)
-                if not self.world[(x, y)]:
+                if not self.world[(x, y)] and self.check_distance(x, y):
                     return x, y
+
+    def check_distance(self, x, y):
+        for i in range(-2, 3):
+            for j in range(-2, 3):
+                if (x + i, y + j) in self.world:
+                    if self.world[(x + i, y + j)]:
+                        return False
+        return True
 
     def add_player(self, player) -> None:
         if player.get_name() not in self.players and player.get_pos():
@@ -52,6 +60,7 @@ class GameMech:
         self.world[egg.get_pos()].append(["egg", egg.get_id()])
 
     def pop_egg(self, egg, player) -> None:
+
         print(f"{player.get_name()} -> {player.get_score()}")
         self.eggs.pop(egg.get_id())
         self.world[egg.get_pos()].remove(["egg", egg.get_id()])

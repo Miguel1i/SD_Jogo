@@ -1,7 +1,7 @@
 import pygame
 from gamemech import GameMech
 from constants import GRID_SIZE, GRID_X, GRID_Y, GAME_TICK, PLAYER_1, PLAYER_2, FONT, FONT_SIZE, WHITE, TRANSPARENT, \
-    GAME_ICON
+    GAME_ICON, GAME_MUSIC, EGG_COLLECT
 import player
 import player_key
 import egg
@@ -48,6 +48,10 @@ class Game(object):
         pygame.display.set_caption("Hop to It!")
         # Clock
         self.clock = pygame.time.Clock()
+        # Music
+        pygame.mixer.music.load(GAME_MUSIC)
+        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.play(-1)
 
     def draw_text(self, text, font, color, x, y):
         text_surface = font.render(text, True, color)
@@ -125,6 +129,9 @@ class Game(object):
                     ovo.kill()
                     self.eggs.remove(ovo)
                     self.gm.pop_egg(ovo, jogador)
+                    pygame.mixer.music.load(EGG_COLLECT)
+                    pygame.mixer.music.set_volume(0.2)
+                    pygame.mixer.music.play(0)
                     self.create_eggs(self.grid_size, 1)
                     self.eggs.update(self, self.gm)
                     rect_1 = self.eggs.draw(self.screen)
