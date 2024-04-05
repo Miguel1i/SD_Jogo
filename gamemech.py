@@ -44,9 +44,8 @@ class GameMech:
     def check_distance(self, x, y):
         for i in range(-2, 3):
             for j in range(-2, 3):
-                if (x + i, y + j) in self.world:
-                    if self.world[(x + i, y + j)]:
-                        return False
+                if (x + i, y + j) in self.world and self.world[(x + i, y + j)]:
+                    return False
         return True
 
     def add_player(self, player) -> None:
@@ -68,9 +67,20 @@ class GameMech:
             self.golden_egg = False
 
     def winner(self):
-        for player_id in self.players:
-            if self.players[player_id][0].get_score() >= self.max_points or self.check_time() >= self.end_time:
+        for player in self.players.values():
+            if player[0].get_score() >= self.max_points:
+                print(f"Player {player[0].get_name()} ganhou!")
                 return True
+        if self.check_time() >= self.end_time:
+            player_1 = self.players[0][0].get_score()
+            player_2 = self.players[1][0].get_score()
+            if player_1 > player_2:
+                print(f"Tempo acabou, o Jogador {self.players[0][0].get_name()} ganhou!")
+            elif player_2 > player_1:
+                print(f"Tempo acabou, o Jogador {self.players[1][0].get_name()} ganhou!")
+            else:
+                print("Tempo acabou, Empate!")
+            return True
 
     def get_score(self, player_id):
         return self.players[player_id][0].get_score()

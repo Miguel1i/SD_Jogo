@@ -49,9 +49,15 @@ class Game(object):
         # Clock
         self.clock = pygame.time.Clock()
         # Music
-        pygame.mixer.music.load(GAME_MUSIC)
-        pygame.mixer.music.set_volume(0.1)
-        pygame.mixer.music.play(-1)
+        pygame.mixer.init()
+        self.sound_effect(GAME_MUSIC, 0.2, -1, 0)
+
+    @staticmethod
+    def sound_effect(music: str, volume: float, repeat: int, channel: int):
+        channel = pygame.mixer.Channel(channel)
+        sound = pygame.mixer.Sound(music)
+        channel.set_volume(volume)
+        channel.play(sound, loops=repeat)
 
     def draw_text(self, text, font, color, x, y):
         text_surface = font.render(text, True, color)
@@ -129,9 +135,7 @@ class Game(object):
                     ovo.kill()
                     self.eggs.remove(ovo)
                     self.gm.pop_egg(ovo, jogador)
-                    pygame.mixer.music.load(EGG_COLLECT)
-                    pygame.mixer.music.set_volume(0.2)
-                    pygame.mixer.music.play(0)
+                    self.sound_effect(EGG_COLLECT, 0.5, 0, 1)
                     self.create_eggs(self.grid_size, 1)
                     self.eggs.update(self, self.gm)
                     rect_1 = self.eggs.draw(self.screen)
