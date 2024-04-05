@@ -1,7 +1,7 @@
 import pygame
 from gamemech import GameMech
 from constants import GRID_SIZE, GRID_X, GRID_Y, GAME_TICK, PLAYER_1, PLAYER_2, FONT, FONT_SIZE, WHITE, TRANSPARENT, \
-    GAME_ICON, GAME_MUSIC, EGG_COLLECT
+    GAME_ICON, GAME_MUSIC, EGG_COLLECT, CHANEL_MUSIC, CHANEL_EGG, NUMBER_EGGS
 import player
 import player_key
 import egg
@@ -50,7 +50,7 @@ class Game(object):
         self.clock = pygame.time.Clock()
         # Music
         pygame.mixer.init()
-        self.sound_effect(GAME_MUSIC, 0.2, -1, 0)
+        self.sound_effect(GAME_MUSIC, 0.2, -1, CHANEL_MUSIC)
 
     @staticmethod
     def sound_effect(music: str, volume: float, repeat: int, channel: int):
@@ -84,7 +84,6 @@ class Game(object):
 
     @staticmethod
     def draw_grid(surface, width: int, height: int, size: int, colour: tuple):
-
         # Draw horizontal lines
         for pos in range(0, height, size):
             pygame.draw.line(surface, colour, (0, pos), (width, pos))
@@ -93,7 +92,6 @@ class Game(object):
             pygame.draw.line(surface, colour, (pos, 0), (pos, height))
 
     def create_bushes(self, bush_size: int):
-
         for x in range(0, self.width, bush_size):
             for y in range(0, self.height, bush_size):
                 if x in (0, self.width - bush_size) or y in (0, self.height - bush_size):
@@ -101,14 +99,12 @@ class Game(object):
                     self.bushes.add(arbusto)
 
     def create_grass(self, grass_size: int):
-
         for x in range(0, self.width, grass_size):
             for y in range(0, self.height, grass_size):
                 erva = grass.Grass(x, y, grass_size, self.grass)
                 self.grass.add(erva)
 
     def create_players(self, size: int) -> None:
-
         player_b = player.Player(5, 5, size, 0, "Henrique", PLAYER_1, self.players)
         player_c = player_key.PlayerKEY(6, 5, size, 1, "Miguel", PLAYER_2, self.players)
         self.players.add(player_b, player_c)
@@ -116,7 +112,6 @@ class Game(object):
         self.gm.add_player(player_c)
 
     def create_eggs(self, egg_size: int, number_eggs: int) -> None:
-
         for _ in range(number_eggs):
             new_id = 0
             if self.eggs:
@@ -135,14 +130,14 @@ class Game(object):
                     ovo.kill()
                     self.eggs.remove(ovo)
                     self.gm.pop_egg(ovo, jogador)
-                    self.sound_effect(EGG_COLLECT, 0.5, 0, 1)
+                    self.sound_effect(EGG_COLLECT, 0.5, 0, CHANEL_EGG)
                     self.create_eggs(self.grid_size, 1)
                     self.eggs.update(self, self.gm)
                     rect_1 = self.eggs.draw(self.screen)
                     pygame.display.update(rect_1)
 
     def run(self):
-        self.create_eggs(self.grid_size, 5)
+        self.create_eggs(self.grid_size, NUMBER_EGGS)
         self.create_grass(self.grid_size)
         self.create_bushes(self.grid_size)
         self.create_players(self.grid_size)
