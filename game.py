@@ -64,7 +64,7 @@ class Game(object):
         self.screen.blit(text_surface, (x, y))
 
     def draw_panel(self, panel_text, x, y):
-        font = pygame.font.SysFont(FONT, FONT_SIZE)
+        font = pygame.font.Font(FONT, FONT_SIZE)
         text_width, text_height = font.size(panel_text)
         panel_surface = pygame.Surface((max(self.width, text_width), max(20, text_height)), pygame.SRCALPHA)
         panel_surface.fill(TRANSPARENT)
