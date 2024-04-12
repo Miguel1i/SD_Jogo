@@ -118,6 +118,15 @@ class GameMech:
             return "0:00"
         return f"{int(minutes)}:{int(seconds):02}"
 
+    def check_egg_collison(self):
+        for jogador in self.players.values():
+            for ovo in self.eggs.values():
+                if jogador[1] == ovo[1]:
+                    self.update_score(jogador[0].get_id(), ovo[0].get_value())
+                    self.pop_egg(ovo[0], jogador[0])
+                    return True, ovo[0]
+        return False, None
+
     def execute(self, player_id: int, direction: str):
 
         if player_id in self.players:
@@ -129,15 +138,12 @@ class GameMech:
                 new_pos: tuple = (
                     pos_anterior[0] + directions[direction][0], pos_anterior[1] + directions[direction][1])
                 mundo_pos = self.world[new_pos]
-
                 if not mundo_pos or mundo_pos[0][0] != "obst" and mundo_pos[0][0] != "player":
                     self.world[pos_anterior].remove(["player", nome, player_id])
                     self.world[new_pos].append(["player", nome, player_id])
                     self.players[player_id] = [player, new_pos]
                     return new_pos
-
                 else:
                     self.players[player_id] = [player, pos_anterior]
                     old_pos = tuple(pos_anterior)
-
                     return old_pos

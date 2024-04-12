@@ -123,18 +123,15 @@ class Game(object):
             self.gm.add_egg(new_egg)
 
     def check_collisions(self):
-        for jogador in self.players:
-            for ovo in self.eggs:
-                if pygame.sprite.collide_rect(jogador, ovo):
-                    self.gm.update_score(jogador.get_id(), ovo.get_value())
-                    ovo.kill()
-                    self.eggs.remove(ovo)
-                    self.gm.pop_egg(ovo, jogador)
-                    self.sound_effect(EGG_COLLECT, 0.5, 0, CHANEL_EGG)
-                    self.create_eggs(self.grid_size, 1)
-                    self.eggs.update(self, self.gm)
-                    rect_1 = self.eggs.draw(self.screen)
-                    pygame.display.update(rect_1)
+        egg_collision = self.gm.check_egg_collison()
+        if egg_collision[0]:
+            egg_collision[1].kill()
+            self.eggs.remove(egg_collision[1])
+            self.sound_effect(EGG_COLLECT, 0.5, 0, CHANEL_EGG)
+            self.create_eggs(self.grid_size, 1)
+            self.eggs.update(self, self.gm)
+            rect_1 = self.eggs.draw(self.screen)
+            pygame.display.update(rect_1)
 
     def run(self):
         self.create_eggs(self.grid_size, NUMBER_EGGS)
