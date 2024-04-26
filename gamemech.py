@@ -138,6 +138,7 @@ class GameMech:
                 new_pos: tuple = (
                     pos_anterior[0] + directions[direction][0], pos_anterior[1] + directions[direction][1])
                 mundo_pos = self.world[new_pos]
+
                 if not mundo_pos or mundo_pos[0][0] != "obst" and mundo_pos[0][0] != "player":
                     self.world[pos_anterior].remove(["player", nome, player_id])
                     self.world[new_pos].append(["player", nome, player_id])
