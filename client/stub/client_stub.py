@@ -1,5 +1,7 @@
 from socket_impl.sockets import Socket
 import stub as client
+
+
 #Constants
 # COMMAND_SIZE = 9
 # INT_SIZE = 8
@@ -16,6 +18,7 @@ class ClientStub:
         self._host = host
         self._port = port
         self.socket = Socket.create_client_connection(self._host, self._port)
+
     # ------------------- conencting to socket ---------------------
     #def connect(self) -> None:
     #    self.current_connection = socket.socket()
@@ -55,7 +58,6 @@ class ClientStub:
     #
     # def stop_client(self):
     #     self.exec_stop_client()
-
 
     #---------------------------------- sending info via sockets ------------------
 
@@ -129,13 +131,13 @@ class ClientStub:
         self.socket.send_int(a, client.INT_SIZE)
         return self.socket.receive_int(client.INT_SIZE)
 
-    def exec_matrix_sum(self,a: list, b: list):
+    def exec_matrix_sum(self, a: list, b: list):
         if self.socket.current_connection is None:
             # Reconnection!
             self.socket = Socket.create_client_connection(self._host, self._port)
         self.socket.send_str(client.MATRIX_OP)
-        self.socket.send_obj(a,client.INT_SIZE)
-        self.socket.send_obj(b,client.INT_SIZE)
+        self.socket.send_obj(a, client.INT_SIZE)
+        self.socket.send_obj(b, client.INT_SIZE)
         return self.socket.receive_obj(client.INT_SIZE)
 
     def exec_stop_client(self):
@@ -145,7 +147,6 @@ class ClientStub:
     def exec_stop_server(self):
         self.socket.send_str(client.STOP_SERVER_OP)
         self.socket.close()
-
 
     # ----- running ------
     # def run(self) -> None:
@@ -165,8 +166,6 @@ class ClientStub:
     #
     #     # terminate the server
     #     self.stop_server()
-
-
 
 #def main():
 #

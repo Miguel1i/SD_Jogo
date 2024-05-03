@@ -12,5 +12,12 @@ def main():
     _client.run()
 
 
-if __name__=="__main__":
+def main():
+    pygame.init()
+    game_mechanics = GameMech(GRID_X, GRID_Y)
+    game = Game(game_mechanics)
+    game.run()
+
+
+if __name__ == "__main__":
     main()

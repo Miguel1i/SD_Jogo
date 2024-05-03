@@ -7,12 +7,14 @@ import player_key
 import egg
 import grass
 import bush
+from stub.client_stub import ClientStub
 
 
 class Game(object):
 
-    def __init__(self, game_mechanics: GameMech):
+    def __init__(self, client_sub: ClientStub):
         # Screen and background
+        self.client_stub = client_sub
         self.height: None = None
         self.width: None = None
         self.screen: None = None
@@ -170,12 +172,3 @@ class Game(object):
         return None
 
 
-def main():
-    pygame.init()
-    game_mechanics = GameMech(GRID_X, GRID_Y)
-    game = Game(game_mechanics)
-    game.run()
-
-
-if __name__ == "__main__":
-    main()
