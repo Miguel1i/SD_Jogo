@@ -101,6 +101,6 @@ class Socket:
     #def listen(self) -> None:
     #    self._s.listen(1)
 
-#    def connect(self) -> None:
-#        self._current_connection = socket.socket()
-#        self._current_connection.connect((self._host, self._port))
+   # def connect(self) -> None:
+   #     self._current_connection = socket.socket()
+   #     self._current_connection.connect((self._host, self._port))

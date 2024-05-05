@@ -7,7 +7,6 @@ from server_impl.gamemech import GameMech
 from socket_impl.sockets import Socket
 from server_impl import LOG_FILENAME, PORT, SERVER_ADDRESS, LOG_LEVEL
 
-
 import client_server
 
 
@@ -90,7 +89,7 @@ class GameServerSkeleton:
         while keep_running:
             current_connection, address = socket.server_connect()
             logging.debug("Client " + str(address) + " just connected")
-            client_server.ClientThread(self.gamemech, current_connection).start()
+            client_server.ClientThread(self.gamemech, current_connection, address).start()
             # While client connected, wait for its demmands and dispatch the requests
             # with current_connection:
             #    last_request = False
@@ -102,4 +101,3 @@ class GameServerSkeleton:
         # If it is not keep_running than socket must be closed...
         self.socket.close()
         logging.info("Server stopped")
-

@@ -1,4 +1,4 @@
-BYE_OP =  "bye      "
+BYE_OP = "bye     "
 STOP_SERVER_OP = "stop    "
 PORT = 35000
 SERVER_ADDRESS = "localhost"

@@ -1,6 +1,7 @@
 from server_impl.gamemech import GameMech
 from server_impl import GRID_X, GRID_Y
-from server_skeleton import GameServerSkeleton
+from skeleton.server_skeleton import GameServerSkeleton
+
 
 def main():
     gamemech = GameMech(GRID_X, GRID_Y)

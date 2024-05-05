@@ -1,7 +1,7 @@
 from stub.client_stub import ClientStub
 from stub import SERVER_ADDRESS, PORT, GRID_SIZE
 import pygame
-from game import Game
+from ui.game import Game
 
 
 def main():

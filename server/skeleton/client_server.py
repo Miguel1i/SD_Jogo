@@ -17,13 +17,11 @@ class ClientThread(Thread):
 
     def process_get_nr_quad_x(self):
         nr_x: int = self.gamemech.get_nr_x()
-        int_size: int = getsizeof(nr_x)
-        self.current_connection.send_int(int_size, int_size)
-        self.current_connection.send_int(nr_x, int_size)
-
+        self.current_connection.send_int(nr_x, server.INT_SIZE)
 
     def process_get_nr_quad_y(self):
-        self.current_connection.send_int(self.gamemech.get_nr_y(), server.INT_SIZE)
+        nr_y: int = self.gamemech.get_nr_y()
+        self.current_connection.send_int(nr_y, server.INT_SIZE)
 
     def dispatch_request(self) -> (bool, bool):
         """
@@ -33,10 +31,10 @@ class ClientThread(Thread):
         # print(request_type)
         keep_running = True
         last_request = False
-        if request_type == server.UPDATE_OP:
-            logging.info("Update operation requested" + str(self.address))
-            self.process_update()
-        elif request_type == server.BYE_OP:
+        # if request_type == server.UPDATE_OP:
+        #     logging.info("Update operation requested" + str(self.address))
+        #     self.process_update()
+        if request_type == server.BYE_OP:
             last_request = True
         elif request_type == server.STOP_SERVER_OP:
             last_request = True
