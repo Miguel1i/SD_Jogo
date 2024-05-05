@@ -1,7 +1,7 @@
 import logging
 
 import server_impl as server
-from server_impl.mathserver import MathServer
+from server_impl.gamemech import GameMech
 
 from server_impl.gamemech import GameMech
 from socket_impl.sockets import Socket

@@ -1,5 +1,5 @@
 import random
-from constants import MATCH_TIME, MAX_POINTS, EGG_NEGATIVE, EGG_POSITIVE, GOLDEN_EGG
+from server_impl import MATCH_TIME, MAX_POINTS, EGG_NEGATIVE, EGG_POSITIVE, GOLDEN_EGG
 import datetime
 
 
@@ -19,6 +19,12 @@ class GameMech:
         self.end_time = datetime.timedelta(seconds=MATCH_TIME) + self.time
         self.max_points = MAX_POINTS
         self.golden_egg = False
+
+    def get_nr_x(self) -> int:
+        return self.x_max
+
+    def get_nr_y(self) -> int:
+        return self.y_max
 
     def generate_world(self, nr_x: int, nr_y: int) -> None:
         self.world = {(x, y): [] for x in range(nr_x) for y in range(nr_y)}

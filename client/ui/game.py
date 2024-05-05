@@ -1,10 +1,9 @@
 import pygame
-from gamemech import GameMech
-from constants import GRID_SIZE, GRID_X, GRID_Y, GAME_TICK, PLAYER_1, PLAYER_2, FONT, FONT_SIZE, WHITE, TRANSPARENT, \
+
+from constants import GAME_TICK, PLAYER_1, PLAYER_2, FONT, FONT_SIZE, WHITE, TRANSPARENT, \
     GAME_ICON, GAME_MUSIC, EGG_COLLECT, CHANEL_MUSIC, CHANEL_EGG, NUMBER_EGGS
-import player
-import player_key
-import egg
+# import player
+#import egg
 import grass
 import bush
 from stub.client_stub import ClientStub
@@ -12,7 +11,7 @@ from stub.client_stub import ClientStub
 
 class Game(object):
 
-    def __init__(self, client_sub: ClientStub):
+    def __init__(self, client_sub: ClientStub, grid_size: int):
         # Screen and background
         self.client_stub = client_sub
         self.height: None = None
@@ -24,17 +23,17 @@ class Game(object):
         # Grid
         self.grid_size: None = None
         self.grid_surface: None = None
-        self.game_settings()
+        self.game_settings(grid_size)
         # Other attributes
-        self.gm: GameMech = game_mechanics
         self.eggs: pygame.sprite.LayeredDirty = pygame.sprite.LayeredDirty()
         self.bushes: pygame.sprite.Group = pygame.sprite.Group()
         self.grass: pygame.sprite.Group = pygame.sprite.Group()
         self.players: pygame.sprite.LayeredDirty = pygame.sprite.LayeredDirty()
         pygame.display.update()
 
-    def game_settings(self):
-        self.width, self.height = GRID_X * GRID_SIZE, GRID_Y * GRID_SIZE
+    def game_settings(self, grid_size: int):
+        self.width, self.height = (self.client_stub.get_nr_quad_x() * grid_size, self.client_stub.get_nr_quad_y() *
+                                   grid_size)
         # Screen and background
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.background = pygame.Surface(self.screen.get_size())
@@ -44,7 +43,7 @@ class Game(object):
         # Grid
         self.grid_surface = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
         self.grid_surface.fill(TRANSPARENT)
-        self.grid_size = GRID_SIZE
+        self.grid_size = grid_size
         self.draw_grid(self.grid_surface, self.width, self.height, self.grid_size, (2, 150, 72))
         # Name of the game
         pygame.display.set_caption("Hop to It!")
@@ -136,38 +135,38 @@ class Game(object):
             pygame.display.update(rect_1)
 
     def run(self):
-        self.create_eggs(self.grid_size, NUMBER_EGGS)
+        #self.create_eggs(self.grid_size, NUMBER_EGGS)
         self.create_grass(self.grid_size)
         self.create_bushes(self.grid_size)
-        self.create_players(self.grid_size)
+        #self.create_players(self.grid_size)
 
-        end_game = False
-        while not end_game:
-            dt = self.clock.tick(GAME_TICK)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    end_game = True
-
-            self.grass.draw(self.screen)
-
-            self.players.update(self, self.gm)
-            rects = self.players.draw(self.screen)
-
-            self.bushes.update(dt)
-            self.bushes.draw(self.screen)
-
-            self.eggs.draw(self.screen)
-
-            self.screen.blit(self.grid_surface, (0, 0))
-            self.check_collisions()
-
-            if self.gm.winner():
-                end_game = True
-
-            self.draw_scoreboard()
-            self.draw_timer()
-
-            pygame.display.update(rects)
+        # end_game = False
+        # while not end_game:
+        #     dt = self.clock.tick(GAME_TICK)
+        #     for event in pygame.event.get():
+        #         if event.type == pygame.QUIT:
+        #             end_game = True
+        #
+        #     self.grass.draw(self.screen)
+        #
+        #     self.players.update(self, self.gm)
+        #     rects = self.players.draw(self.screen)
+        #
+        #     self.bushes.update(dt)
+        #     self.bushes.draw(self.screen)
+        #
+        #     self.eggs.draw(self.screen)
+        #
+        #     self.screen.blit(self.grid_surface, (0, 0))
+        #     self.check_collisions()
+        #
+        #     if self.gm.winner():
+        #         end_game = True
+        #
+        #     self.draw_scoreboard()
+        #     self.draw_timer()
+        #
+        #     pygame.display.update(rects)
 
         return None
 

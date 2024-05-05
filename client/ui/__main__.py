@@ -1,21 +1,13 @@
-from stub.client_stub import ClientMathServer
-from client import Client
-from socket_impl.sockets import Socket
-from stub import SERVER_ADDRESS
-from stub import PORT
-
-def main():
-    #socket = Socket(SERVER_ADDRESS,PORT)
-    #socket = Socket.create_client_connection(SERVER_ADDRESS,PORT)
-    stub = ClientMathServer(SERVER_ADDRESS, PORT)
-    _client = Client(stub)
-    _client.run()
+from stub.client_stub import ClientStub
+from stub import SERVER_ADDRESS, PORT, GRID_SIZE
+import pygame
+from game import Game
 
 
 def main():
     pygame.init()
-    game_mechanics = GameMech(GRID_X, GRID_Y)
-    game = Game(game_mechanics)
+    client_stub: ClientStub = ClientStub(SERVER_ADDRESS, PORT)
+    game: Game = Game(client_stub, GRID_SIZE)
     game.run()
 
 

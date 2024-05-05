@@ -1,45 +1,29 @@
+from sys import getsizeof
 from threading import Thread
 import logging
 import server_impl as server
-import numpy as np
-import ast
 from server_impl.gamemech import GameMech
 
 
 class ClientThread(Thread):
-    def __init__(self, gamemech, current_connection, address):
+    def __init__(self, gamemech: GameMech, current_connection, address):
         self.current_connection = current_connection
-        self.gamemech = gamemech
+        self.gamemech: GameMech = gamemech
         self.address = address
         Thread.__init__(self)
 
     def process_update(self):
         pass
 
-    """def process_add(self) -> None:
-        a = self.current_connection.receive_int(server.INT_SIZE)
-        b = self.current_connection.receive_int(server.INT_SIZE)
-        result = self.mathserver.add(a, b)
-        self.current_connection.send_int(result, server.INT_SIZE)
-
-    def process_sym(self) -> None:
-        a = self.current_connection.receive_int(server.INT_SIZE)
-        result = self.mathserver.sym(a)
-        self.current_connection.send_int(result, server.INT_SIZE)
-
-    def process_subtract(self) -> None:
-        a = self.current_connection.receive_int(server.INT_SIZE)
-        b = self.current_connection.receive_int(server.INT_SIZE)
-        result = self.mathserver.subtract(a, b)
-        self.current_connection.send_int(result, server.INT_SIZE)
+    def process_get_nr_quad_x(self):
+        nr_x: int = self.gamemech.get_nr_x()
+        int_size: int = getsizeof(nr_x)
+        self.current_connection.send_int(int_size, int_size)
+        self.current_connection.send_int(nr_x, int_size)
 
 
-    def process_matrix_sum(self) -> None:
-        a = self.current_connection.receive_obj(server.INT_SIZE)
-        b = self.current_connection.receive_obj(server.INT_SIZE)
-        result = self.mathserver.matrix_add(a,b)
-        self.current_connection.send_obj(result,server.INT_SIZE)
-"""
+    def process_get_nr_quad_y(self):
+        self.current_connection.send_int(self.gamemech.get_nr_y(), server.INT_SIZE)
 
     def dispatch_request(self) -> (bool, bool):
         """
@@ -57,6 +41,13 @@ class ClientThread(Thread):
         elif request_type == server.STOP_SERVER_OP:
             last_request = True
             keep_running = False
+        elif request_type == server.QUADX_OP:
+            logging.info("Quad x operation requested" + str(self.address))
+            self.process_get_nr_quad_x()
+        elif request_type == server.QUADY_OP:
+            logging.info("Quad y operation requested" + str(self.address))
+            self.process_get_nr_quad_y()
+
         return keep_running, last_request
 
     def run(self):

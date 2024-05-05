@@ -1,5 +1,5 @@
 import pygame
-from gamemech import GameMech
+from game_mech import GameMech
 
 
 class Player(pygame.sprite.DirtySprite):
