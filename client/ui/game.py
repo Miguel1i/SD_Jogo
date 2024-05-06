@@ -2,8 +2,8 @@ import pygame
 
 from ui.constants import GAME_TICK, PLAYER_1, PLAYER_2, FONT, FONT_SIZE, WHITE, TRANSPARENT, \
     GAME_ICON, GAME_MUSIC, EGG_COLLECT, CHANEL_MUSIC, CHANEL_EGG, NUMBER_EGGS
-# import player
-#import egg
+import player
+import egg
 import grass
 import bush
 from stub.client_stub import ClientStub
@@ -53,35 +53,36 @@ class Game(object):
         #pygame.mixer.init()
         #self.sound_effect(GAME_MUSIC, 0.2, -1, CHANEL_MUSIC)
 
-    # @staticmethod
-    # def sound_effect(music: str, volume: float, repeat: int, channel: int):
-    #     channel = pygame.mixer.Channel(channel)
-    #     sound = pygame.mixer.Sound(music)
-    #     channel.set_volume(volume)
-    #     channel.play(sound, loops=repeat)
-    #
-    # def draw_text(self, text, font, color, x, y):
-    #     text_surface = font.render(text, True, color)
-    #     self.screen.blit(text_surface, (x, y))
-    #
-    # def draw_panel(self, panel_text, x, y):
-    #     font = pygame.font.Font(FONT, FONT_SIZE)
-    #     text_width, text_height = font.size(panel_text)
-    #     panel_surface = pygame.Surface((max(self.width, text_width), max(20, text_height)), pygame.SRCALPHA)
-    #     panel_surface.fill(TRANSPARENT)
-    #     self.screen.blit(panel_surface, (x, y))
-    #     self.draw_text(panel_text, font, WHITE, x, y)
-    #     pygame.display.update(pygame.Rect(x, y, max(self.width, text_width), max(20, text_height)))
+    @staticmethod
+    def sound_effect(music: str, volume: float, repeat: int, channel: int):
+        channel = pygame.mixer.Channel(channel)
+        sound = pygame.mixer.Sound(music)
+        channel.set_volume(volume)
+        channel.play(sound, loops=repeat)
 
-    # def draw_scoreboard(self):
-    #     for jogador in self.players:
-    #         x = self.width // 2 - 220 if jogador.get_id() == 0 else self.width // 2 + 110
-    #         panel_text = f"{jogador.get_name()}: {self.gm.get_score(jogador.get_id())}"
-    #         self.draw_panel(panel_text, x, 5)
-    #
-    # #def draw_timer(self):
-    #    # panel_text = self.gm.calc_time()
-    #    # self.draw_panel(panel_text, self.width // 2 - 25, 5)
+    def draw_text(self, text, font, color, x, y):
+        text_surface = font.render(text, True, color)
+        self.screen.blit(text_surface, (x, y))
+
+    def draw_panel(self, panel_text, x, y):
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        text_width, text_height = font.size(panel_text)
+        panel_surface = pygame.Surface((max(self.width, text_width), max(20, text_height)), pygame.SRCALPHA)
+        panel_surface.fill(TRANSPARENT)
+        self.screen.blit(panel_surface, (x, y))
+        self.draw_text(panel_text, font, WHITE, x, y)
+        pygame.display.update(pygame.Rect(x, y, max(self.width, text_width), max(20, text_height)))
+
+    def draw_scoreboard(self):
+        for jogador in self.players:
+            x = self.width // 2 - 220 if jogador.get_id() == 0 else self.width // 2 + 110
+            panel_text = f"{jogador.get_name()}: {self.client_stub.get_score(jogador.get_id())}"
+            self.draw_panel(panel_text, x, 5)
+
+    def draw_timer(self):
+        panel_text = self.client_stub.calc_time()
+        print(panel_text)
+        self.draw_panel(panel_text, self.width // 2 - 25, 5)
 
     @staticmethod
     def draw_grid(surface, width: int, height: int, size: int, colour: tuple):
@@ -92,81 +93,82 @@ class Game(object):
         for pos in range(0, width, size):
             pygame.draw.line(surface, colour, (pos, 0), (pos, height))
 
-    # def create_bushes(self, bush_size: int):
-    #     for x in range(0, self.width, bush_size):
-    #         for y in range(0, self.height, bush_size):
-    #             if x in (0, self.width - bush_size) or y in (0, self.height - bush_size):
-    #                 arbusto = bush.Bush(x, y, 0, bush_size, self.bushes)
-    #                 self.bushes.add(arbusto)
-    #
-    # def create_grass(self, grass_size: int):
-    #     for x in range(0, self.width, grass_size):
-    #         for y in range(0, self.height, grass_size):
-    #             erva = grass.Grass(x, y, grass_size, self.grass)
-    #             self.grass.add(erva)
-    #
-    # def create_players(self, size: int) -> None:
-    #     player_b = player.Player(5, 5, size, 0, "Henrique", PLAYER_1, self.players)
-    #     player_c = player_key.PlayerKEY(6, 5, size, 1, "Miguel", PLAYER_2, self.players)
-    #     self.players.add(player_b, player_c)
-    #     self.gm.add_player(player_b)
-    #     self.gm.add_player(player_c)
-    #
-    # def create_eggs(self, egg_size: int, number_eggs: int) -> None:
-    #     for _ in range(number_eggs):
-    #         new_id = 0
-    #         if self.eggs:
-    #             new_id = max([ovo.get_id() for ovo in self.eggs]) + 1
-    #         pos_x, pos_y = self.gm.calculate_egg_spawn(number_eggs)
-    #         skin, value = self.gm.determine_egg()
-    #         new_egg = egg.Egg(pos_x, pos_y, egg_size, skin, new_id, value, self.eggs)
-    #         self.eggs.add(new_egg)
-    #         self.gm.add_egg(new_egg)
-    #
-    # def check_collisions(self):
-    #     egg_collision = self.gm.check_egg_collison()
-    #     if egg_collision[0]:
-    #         egg_collision[1].kill()
-    #         self.eggs.remove(egg_collision[1])
-    #         self.sound_effect(EGG_COLLECT, 0.5, 0, CHANEL_EGG)
-    #         self.create_eggs(self.grid_size, 1)
-    #         self.eggs.update(self, self.gm)
-    #         rect_1 = self.eggs.draw(self.screen)
-    #         pygame.display.update(rect_1)
+    def create_bushes(self, bush_size: int):
+        for x in range(0, self.width, bush_size):
+            for y in range(0, self.height, bush_size):
+                if x in (0, self.width - bush_size) or y in (0, self.height - bush_size):
+                    arbusto = bush.Bush(x, y, 0, bush_size, self.bushes)
+                    self.bushes.add(arbusto)
+
+    def create_grass(self, grass_size: int):
+        for x in range(0, self.width, grass_size):
+            for y in range(0, self.height, grass_size):
+                erva = grass.Grass(x, y, grass_size, self.grass)
+                self.grass.add(erva)
+
+    def create_players(self, size: int) -> None:
+        player_b = player.Player(5, 5, size, 0, "Henrique", PLAYER_1, self.players)
+        player_c = player.Player(15, 15, size, 1, "Lucas", PLAYER_2, self.players)
+        self.players.add(player_b, player_c)
+        self.client_stub.add_player(player_b)
+        self.client_stub.add_player(player_c)
+
+    def create_eggs(self, egg_size: int) -> None:
+        number_eggs = self.client_stub.get_nr_eggs()
+        for _ in range(number_eggs):
+            new_id = 0
+            if self.eggs:
+                new_id = max([ovo.get_id() for ovo in self.eggs]) + 1
+            pos_x, pos_y = self.client_stub.calculate_egg_spawn()
+            skin, value = self.client_stub.determine_egg()
+            new_egg = egg.Egg(pos_x, pos_y, egg_size, skin, new_id, value, self.eggs)
+            self.eggs.add(new_egg)
+            self.client_stub.add_egg(new_egg)
+
+    def check_collisions(self):
+        egg_collision = self.client_stub.check_egg_collison()
+        if egg_collision[0]:
+            egg_collision[1].kill()
+            self.eggs.remove(egg_collision[1])
+            self.sound_effect(EGG_COLLECT, 0.5, 0, CHANEL_EGG)
+            self.create_eggs(self.grid_size)
+            self.eggs.update(self, self.client_stub)
+            rect_1 = self.eggs.draw(self.screen)
+            pygame.display.update(rect_1)
 
     def run(self):
-        #self.create_eggs(self.grid_size, NUMBER_EGGS)
-        #self.create_grass(self.grid_size)
-        #self.create_bushes(self.grid_size)
-        #self.create_players(self.grid_size)
+        #self.create_eggs(self.grid_size)
+        self.create_grass(self.grid_size)
+        self.create_bushes(self.grid_size)
+        self.create_players(self.grid_size)
 
         end_game = False
         while not end_game:
-            pass
-            # dt = self.clock.tick(GAME_TICK)
-            # for event in pygame.event.get():
-            #     if event.type == pygame.QUIT:
-            #         end_game = True
-            #
-            # self.grass.draw(self.screen)
-            #
-            # self.players.update(self, self.gm)
-            # rects = self.players.draw(self.screen)
-            #
-            # self.bushes.update(dt)
-            # self.bushes.draw(self.screen)
-            #
-            # self.eggs.draw(self.screen)
-            #
-            #self.screen.blit(self.grid_surface, (0, 0))
-            # self.check_collisions()
-            #
-            # if self.gm.winner():
-            #     end_game = True
-            #
-        # self.draw_scoreboard()
-        # self.draw_timer()
-        #
-        # pygame.display.update(rects)
+
+            dt = self.clock.tick(GAME_TICK)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    end_game = True
+
+            self.grass.draw(self.screen)
+
+            self.players.update(self, self.client_stub)
+            rects = self.players.draw(self.screen)
+
+            self.bushes.update(dt)
+            self.bushes.draw(self.screen)
+
+            self.eggs.draw(self.screen)
+
+            self.screen.blit(self.grid_surface, (0, 0))
+            #self.check_collisions()
+
+            if self.client_stub.winner() != "False":
+                end_game = True
+
+            self.draw_scoreboard()
+            self.draw_timer()
+
+            pygame.display.update(rects)
 
         return None

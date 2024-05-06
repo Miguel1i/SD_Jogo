@@ -55,6 +55,13 @@ class Socket:
         """
         self._current_connection.send(value.encode())
 
+    def recieve_tuple(self, n_bytes: int) -> tuple:
+        data = self._current_connection.recv(n_bytes)
+        return tuple(data.decode())
+
+    def send_tuple(self, value: tuple) -> None:
+        self._current_connection.send(bytes(value.encode()))
+
     def send_obj(self, value: object, n_bytes: int) -> None:
         msg = json.dumps(value)
         size = len(msg)
@@ -101,6 +108,6 @@ class Socket:
     #def listen(self) -> None:
     #    self._s.listen(1)
 
-   # def connect(self) -> None:
-   #     self._current_connection = socket.socket()
-   #     self._current_connection.connect((self._host, self._port))
+# def connect(self) -> None:
+#     self._current_connection = socket.socket()
+#     self._current_connection.connect((self._host, self._port))

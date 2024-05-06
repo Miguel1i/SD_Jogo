@@ -1,5 +1,5 @@
 import pygame
-from game_mech import GameMech
+from client.stub.client_stub import ClientStub
 
 
 class Player(pygame.sprite.DirtySprite):
@@ -98,7 +98,7 @@ class Player(pygame.sprite.DirtySprite):
         """
         return self.pos
 
-    def update(self, game: object, gm: GameMech) -> None:
+    def update(self, game: object, cs: ClientStub) -> None:
         """
         Atualiza a posição do jogador com base nas teclas pressionadas.
 
@@ -109,22 +109,22 @@ class Player(pygame.sprite.DirtySprite):
         key = pygame.key.get_pressed()
 
         if key[pygame.K_LEFT]:
-            new_pos: list[int] = list(gm.execute(self.player_id, "LEFT"))
+            new_pos: list[int] = list(cs.execute(self.player_id, "LEFT"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
         if key[pygame.K_RIGHT]:
-            new_pos: list[int] = list(gm.execute(self.player_id, "RIGHT"))
+            new_pos: list[int] = list(cs.execute(self.player_id, "RIGHT"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
         if key[pygame.K_UP]:
-            new_pos: list[int] = list(gm.execute(self.player_id, "UP"))
+            new_pos: list[int] = list(cs.execute(self.player_id, "UP"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
         if key[pygame.K_DOWN]:
-            new_pos: list[int] = list(gm.execute(self.player_id, "DOWN"))
+            new_pos: list[int] = list(cs.execute(self.player_id, "DOWN"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size

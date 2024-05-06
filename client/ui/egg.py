@@ -1,5 +1,4 @@
 import pygame
-from gamemech import GameMech
 
 
 class Egg(pygame.sprite.DirtySprite):
@@ -28,6 +27,6 @@ class Egg(pygame.sprite.DirtySprite):
     def get_size(self):
         return self.new_size
 
-    def update(self, game: object, gm: GameMech):
+    def update(self):
         # Keep visible
         self.dirty = 1

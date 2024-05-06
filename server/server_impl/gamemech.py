@@ -39,6 +39,11 @@ class GameMech:
                     self.world[(x, y)].append(["obst", "bush", nr_bushes])
                     nr_bushes += 1
 
+    def calculate_nr_eggs(self) -> int:
+        if len(self.eggs) == 0:
+            return 5
+        return 1
+
     def calculate_egg_spawn(self, nr_eggs: int):
         for _ in range(nr_eggs):
             while True:
@@ -75,26 +80,25 @@ class GameMech:
     def winner(self):
         for player in self.players.values():
             if player[0].get_score() >= self.max_points:
-                print(f"Player {player[0].get_name()} ganhou!")
-                return True
+                return f"Player {player[0].get_name()} ganhou!"
         if self.check_time() >= self.end_time:
             player_1 = self.players[0][0].get_score()
             player_2 = self.players[1][0].get_score()
             if player_1 > player_2:
-                print(f"Tempo acabou, o Jogador {self.players[0][0].get_name()} ganhou!")
+                return f"Tempo acabou, o Jogador {self.players[0][0].get_name()} ganhou!"
             elif player_2 > player_1:
-                print(f"Tempo acabou, o Jogador {self.players[1][0].get_name()} ganhou!")
+                return f"Tempo acabou, o Jogador {self.players[1][0].get_name()} ganhou!"
             else:
-                print("Tempo acabou, Empate!")
-            return True
+                return "Tempo acabou, Empate!"
+        return "False"
 
-    def get_score(self, player_id):
+    def get_score(self, player_id) -> int:
         return self.players[player_id][0].get_score()
 
     def update_score(self, player_id, score):
         self.players[player_id][0].set_score(score)
 
-    def determine_egg(self):
+    def determine_egg(self) -> tuple:
         current_points = sum(self.players[player_id][0].get_score() for player_id in self.players)
         if current_points != 0 and current_points % 10 == 0 and self.golden_egg is False:
             self.golden_egg = True
@@ -115,7 +119,7 @@ class GameMech:
         self.time = datetime.datetime.now()
         return self.time
 
-    def calc_time(self):
+    def calc_time(self) -> str:
         delta = self.end_time - datetime.datetime.now()
         total_seconds = delta.total_seconds()
         minutes = total_seconds // 60
@@ -124,7 +128,7 @@ class GameMech:
             return "0:00"
         return f"{int(minutes)}:{int(seconds):02}"
 
-    def check_egg_collison(self):
+    def check_egg_collison(self) -> tuple:
         for jogador in self.players.values():
             for ovo in self.eggs.values():
                 if jogador[1] == ovo[1]:

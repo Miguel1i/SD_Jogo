@@ -23,6 +23,59 @@ class ClientThread(Thread):
         nr_y: int = self.gamemech.get_nr_y()
         self.current_connection.send_int(nr_y, server.INT_SIZE)
 
+    def process_get_score(self):
+        player_id: int = self.current_connection.recieve_int(server.INT_SIZE)
+        score = self.gamemech.get_score(player_id)
+        self.current_connection.send_int(score, server.INT_SIZE)
+
+    def process_time(self):
+        time: str = self.gamemech.calc_time()
+        self.current_connection.send_int(getsizeof(time), server.INT_SIZE)
+        self.current_connection.send_str(time)
+
+    def process_determine_egg(self):
+        egg: tuple = self.gamemech.determine_egg()
+        self.current_connection.send_int(getsizeof(egg), server.INT_SIZE)
+        self.current_connection.send_tuple(egg)
+
+    def process_winner(self):
+        winner: str = self.gamemech.winner()
+        self.current_connection.send_int(getsizeof(winner), server.INT_SIZE)
+        self.current_connection.send_str(winner)
+
+    def process_check_collision(self):
+        collision: tuple = self.gamemech.check_egg_collison()
+        self.current_connection.send_int(getsizeof(collision), server.INT_SIZE)
+        self.current_connection.send_tuple(collision)
+
+    def process_calc_eggs(self):
+        nr_eggs: int = self.gamemech.calculate_nr_eggs()
+        coords: tuple = self.gamemech.calculate_egg_spawn(nr_eggs)
+        self.current_connection.send_int(getsizeof(coords), server.INT_SIZE)
+        self.current_connection.send_tuple(coords)
+
+    def process_execute(self):
+        player_id: int = self.current_connection.receive_int(server.INT_SIZE)
+        direction: str = self.current_connection.receive_str(server.COMMAND_SIZE)
+        new_position = self.gamemech.execute(player_id, direction)
+        self.current_connection.send_int(getsizeof(new_position), server.INT_SIZE)
+        self.current_connection.send_tuple(new_position)
+
+    def process_add_player(self):
+        player_size = self.current_connection.receive_int(server.INT_SIZE)
+        player = self.current_connection.recieve_obj(player_size)
+        print(player)
+        self.gamemech.add_player(player)
+
+    def process_get_nr_eggs(self):
+        nr_eggs = self.gamemech.calculate_nr_eggs()
+        self.current_connection.send_int(nr_eggs, server.INT_SIZE)
+
+    def process_add_egg(self):
+        egg_size = self.current_connection.receive_int(server.INT_SIZE)
+        egg = self.current_connection.recieve_obj(egg_size)
+        self.gamemech.add_egg(egg)
+
     def dispatch_request(self) -> (bool, bool):
         """
         Calls process functions based on type of request.
@@ -45,7 +98,36 @@ class ClientThread(Thread):
         elif request_type == server.QUADY_OP:
             logging.info("Quad y operation requested" + str(self.address))
             self.process_get_nr_quad_y()
-
+        elif request_type == server.SCORE_OP:
+            logging.info("Score operation requested" + str(self.address))
+            self.process_get_score()
+        elif request_type == server.TIME_OP:
+            logging.info("Time operation requested" + str(self.address))
+            self.process_time()
+        elif request_type == server.DETERMINE_OP:
+            logging.info("Determine egg operation requested" + str(self.address))
+            self.process_determine_egg()
+        elif request_type == server.WINNER_OP:
+            logging.info("Winner operation requested" + str(self.address))
+            self.process_winner()
+        elif request_type == server.CHECK_COLLISION_OP:
+            logging.info("Check collision operation requested" + str(self.address))
+            self.process_check_collision()
+        elif request_type == server.CALC_EGGS:
+            logging.info("Calculated eggs operation requested" + str(self.address))
+            self.process_calc_eggs()
+        elif request_type == server.EXECUTE:
+            logging.info("Execute operation requested" + str(self.address))
+            self.process_execute()
+        elif request_type == server.ADD_PLAYER_OP:
+            logging.info("Add player operation requested" + str(self.address))
+            self.process_add_player()
+        elif request_type == server.ADD_EGG_OP:
+            logging.info("Add egg operation requested" + str(self.address))
+            self.process_add_egg()
+        elif request_type == server.GET_NR_EGGS_OP:
+            logging.info("Get nr eggs operation requested" + str(self.address))
+            self.process_get_nr_eggs()
         return keep_running, last_request
 
     def run(self):
