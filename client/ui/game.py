@@ -1,8 +1,8 @@
 import pygame
 
-from ui.constants import GAME_TICK, PLAYER_1, PLAYER_2, FONT, FONT_SIZE, WHITE, TRANSPARENT, \
+from ui.constants import GAME_TICK, FONT, FONT_SIZE, WHITE, TRANSPARENT, \
     GAME_ICON, GAME_MUSIC, EGG_COLLECT, CHANEL_MUSIC, CHANEL_EGG, NUMBER_EGGS
-import player
+from ui.player import  Player
 import egg
 import grass
 import bush
@@ -107,11 +107,11 @@ class Game(object):
                 self.grass.add(erva)
 
     def create_players(self, size: int) -> None:
-        player_b = player.Player(5, 5, size, 0, "Henrique", PLAYER_1, self.players)
-        player_c = player.Player(15, 15, size, 1, "Lucas", PLAYER_2, self.players)
-        self.players.add(player_b, player_c)
-        self.client_stub.add_player(player_b)
-        self.client_stub.add_player(player_c)
+        name: str = str(input("Qual é o teu nome? "))
+        pos, skin, player_id = self.client_stub.set_player(name)
+        player: Player = Player(pos[0], pos[1], size, player_id, name, skin, self.players)
+        self.client_stub.add_player(player)
+        self.players.add(player)
 
     def create_eggs(self, egg_size: int) -> None:
         number_eggs = self.client_stub.get_nr_eggs()
@@ -144,7 +144,6 @@ class Game(object):
 
         end_game = False
         while not end_game:
-
             dt = self.clock.tick(GAME_TICK)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -166,7 +165,7 @@ class Game(object):
             if self.client_stub.winner() != "False":
                 end_game = True
 
-            self.draw_scoreboard()
+            #self.draw_scoreboard()
             self.draw_timer()
 
             pygame.display.update(rects)

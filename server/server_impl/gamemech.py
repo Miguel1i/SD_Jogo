@@ -1,5 +1,7 @@
 import random
-from server_impl import MATCH_TIME, MAX_POINTS, EGG_NEGATIVE, EGG_POSITIVE, GOLDEN_EGG
+from typing import Tuple
+
+from server_impl import MATCH_TIME, MAX_POINTS, EGG_NEGATIVE, EGG_POSITIVE, GOLDEN_EGG, GAME_TICK, SPAWN_POINT_A, SPAWN_POINT_B, PLAYER_1, PLAYER_2
 import datetime
 
 
@@ -19,6 +21,10 @@ class GameMech:
         self.end_time = datetime.timedelta(seconds=MATCH_TIME) + self.time
         self.max_points = MAX_POINTS
         self.golden_egg = False
+        self.game_tick = GAME_TICK
+
+    def get_game_tick(self) -> int:
+        return self.game_tick
 
     def get_nr_x(self) -> int:
         return self.x_max
@@ -59,11 +65,18 @@ class GameMech:
                     return False
         return True
 
-    def add_player(self, player) -> None:
-        if player.get_name() not in self.players and player.get_pos():
-            self.players[player.get_id()] = [player, player.get_pos()]
-            self.world[player.get_pos()].append(["player", player.get_name(), player.get_id()])
+    def set_player(self, player_name) -> tuple[tuple, str, int] | int:
+        pos, skin = (SPAWN_POINT_A, PLAYER_1) if self.nr_players == 0 else (SPAWN_POINT_B, PLAYER_2)
+        player_id = self.nr_players
+        if player_name not in self.players:
             self.nr_players += 1
+            return pos, skin, player_id
+        else:
+            return 0
+
+    def add_player(self, player):
+        self.players[player.get_id()] = [player, player.get_name()]
+        self.world[player.get_pos()].append(["player", player.get_name(), player.get_id()])
 
     def add_egg(self, egg) -> None:
         self.eggs[egg.get_id()] = [egg, egg.get_pos()]

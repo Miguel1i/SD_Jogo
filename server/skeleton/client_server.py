@@ -24,7 +24,7 @@ class ClientThread(Thread):
         self.current_connection.send_int(nr_y, server.INT_SIZE)
 
     def process_get_score(self):
-        player_id: int = self.current_connection.recieve_int(server.INT_SIZE)
+        player_id: int = self.current_connection.receive_int(server.INT_SIZE)
         score = self.gamemech.get_score(player_id)
         self.current_connection.send_int(score, server.INT_SIZE)
 
@@ -61,12 +61,6 @@ class ClientThread(Thread):
         self.current_connection.send_int(getsizeof(new_position), server.INT_SIZE)
         self.current_connection.send_tuple(new_position)
 
-    def process_add_player(self):
-        player_size = self.current_connection.receive_int(server.INT_SIZE)
-        player = self.current_connection.recieve_obj(player_size)
-        print(player)
-        self.gamemech.add_player(player)
-
     def process_get_nr_eggs(self):
         nr_eggs = self.gamemech.calculate_nr_eggs()
         self.current_connection.send_int(nr_eggs, server.INT_SIZE)
@@ -75,6 +69,23 @@ class ClientThread(Thread):
         egg_size = self.current_connection.receive_int(server.INT_SIZE)
         egg = self.current_connection.recieve_obj(egg_size)
         self.gamemech.add_egg(egg)
+
+    def process_tick(self):
+        tick: int = self.current_connection.recieve_int(server.INT_SIZE)
+        self.current_connection.send_int(tick, server.INT_SIZE)
+
+    def process_set_player(self):
+        size = self.current_connection.receive_int(server.INT_SIZE)
+        player_name = self.current_connection.receive_str(size)
+        res: tuple = self.gamemech.set_player(player_name)
+        self.current_connection.send_int(getsizeof(res), server.INT_SIZE)
+        self.current_connection.send_obj(res, getsizeof(res))
+
+    def process_add_player(self):
+        player = self.current_connection.receive_player()
+        print(player)
+        #res = self.gamemech.add_player(player_name)
+        #self.current_connection.send_obj(res, getsizeof(res))
 
     def dispatch_request(self) -> (bool, bool):
         """
@@ -110,6 +121,9 @@ class ClientThread(Thread):
         elif request_type == server.WINNER_OP:
             logging.info("Winner operation requested" + str(self.address))
             self.process_winner()
+        elif request_type == server.GAME_TICK:
+            logging.info("Tick operation requested" + str(self.address))
+            self.process_tick()
         elif request_type == server.CHECK_COLLISION_OP:
             logging.info("Check collision operation requested" + str(self.address))
             self.process_check_collision()
@@ -119,6 +133,9 @@ class ClientThread(Thread):
         elif request_type == server.EXECUTE:
             logging.info("Execute operation requested" + str(self.address))
             self.process_execute()
+        elif request_type == server.SET_PLAYER_OP:
+            logging.info("Add player operation requested" + str(self.address))
+            self.process_set_player()
         elif request_type == server.ADD_PLAYER_OP:
             logging.info("Add player operation requested" + str(self.address))
             self.process_add_player()

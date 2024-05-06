@@ -1,6 +1,5 @@
 BUSH: str = "assets/Sprites/bush.png"
-PLAYER_1: str = "assets/Sprites/player_1.png"
-PLAYER_2: str = "assets/Sprites/player_2.png"
+
 GRASS_A: str = "assets/Sprites/grass_pattern_A.png"
 GRASS_B: str = "assets/Sprites/grass_pattern_B.png"
 GRASS_C: str = "assets/Sprites/grass_pattern_C.png"

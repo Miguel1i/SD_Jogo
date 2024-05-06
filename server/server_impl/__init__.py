@@ -7,11 +7,13 @@ BYE_OP = "bye     "
 WINNER_OP = "winner  "
 CHECK_COLLISION_OP = "check   "
 ADD_PLAYER_OP = "add_play"
+SET_PLAYER_OP = "set_play"
 EXECUTE = "execute "
 GET_NR_EGGS_OP = "get_eggs"
 ADD_EGG_OP = "add_egg "
 STOP_SERVER_OP = "stop    "
 CALC_EGGS = "calceggs "
+# Constants
 COMMAND_SIZE = 9
 INT_SIZE = 8
 LOG_FILENAME = "server.log"
@@ -24,6 +26,11 @@ MAX_POINTS: int = 30
 EGG_POSITIVE: str = "assets/Sprites/egg_positive.png"
 EGG_NEGATIVE: str = "assets/Sprites/egg_negative.png"
 GOLDEN_EGG: str = "assets/Sprites/golden_egg.png"
+GAME_TICK: int = 10
+SPAWN_POINT_A: tuple = (5, 5)
+SPAWN_POINT_B: tuple = (6, 5)
+PLAYER_1: str = "assets/Sprites/player_1.png"
+PLAYER_2: str = "assets/Sprites/player_2.png"
 # Connection
 PORT = 35000
 SERVER_ADDRESS = "localhost"

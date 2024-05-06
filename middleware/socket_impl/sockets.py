@@ -1,3 +1,4 @@
+import pickle
 import socket
 import json
 import server_impl
@@ -55,13 +56,6 @@ class Socket:
         """
         self._current_connection.send(value.encode())
 
-    def recieve_tuple(self, n_bytes: int) -> tuple:
-        data = self._current_connection.recv(n_bytes)
-        return tuple(data.decode())
-
-    def send_tuple(self, value: tuple) -> None:
-        self._current_connection.send(bytes(value.encode()))
-
     def send_obj(self, value: object, n_bytes: int) -> None:
         msg = json.dumps(value)
         size = len(msg)
@@ -72,6 +66,8 @@ class Socket:
         size = self.receive_int(n_bytes)
         obj = self.receive_str(size)
         return json.loads(obj)
+
+
 
     def close(self):
         self._current_connection.close()
