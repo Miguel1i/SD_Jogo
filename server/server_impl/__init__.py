@@ -1,3 +1,4 @@
+# Operations
 QUADX_OP = "quad_x  "
 QUADY_OP = "quad_y  "
 SCORE_OP = "score   "

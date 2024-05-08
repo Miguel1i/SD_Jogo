@@ -15,18 +15,40 @@ class Egg(pygame.sprite.DirtySprite):
         self.egg_id = egg_id
         self.pos = (pos_x, pos_y)
 
-    def get_id(self):
+    def get_id(self) -> int:
+        """
+        Obtém o id do ovo
+        :return: int: id do ovo
+        """
         return self.egg_id
 
-    def get_pos(self):
+    def get_pos(self) -> tuple[int, int]:
+        """
+        Obtém a posição do ovo
+        :return: tuple: posição do ovo
+        """
         return self.pos
 
-    def get_value(self):
+    def get_value(self) -> int:
+        """
+        Obtém o valor do ovo
+        :return: int: valor do ovo
+        """
         return self.value
 
-    def get_size(self):
+    def get_size(self) -> tuple[int, int]:
+        """
+        Obtém o tamanho do ovo
+        :return: tuple: tamanho do ovo
+        """
         return self.new_size
 
-    def update(self):
+    def update(self, game: object, cs: object):
+        """
+        Atualiza o ovo, mantendo-o visível
+        :param game:
+        :param cs:
+        :return:
+        """
         # Keep visible
         self.dirty = 1

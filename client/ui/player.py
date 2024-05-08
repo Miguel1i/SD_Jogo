@@ -42,7 +42,7 @@ class Player(pygame.sprite.DirtySprite):
         self.pos: tuple[int, int] = (pos_x, pos_y)
         self.player_id: int = player_id
         self.name: str = name
-        self.score: int = 0
+
 
     def get_size(self) -> tuple[int, int]:
         """
@@ -52,24 +52,6 @@ class Player(pygame.sprite.DirtySprite):
             tuple: O tamanho do jogador.
         """
         return self.new_size
-
-    def set_score(self, score: int) -> None:
-        """
-        Incrementa a pontuação do jogador.
-
-        Args:
-            score (int): A quantidade para incrementar a pontuação do jogador.
-        """
-        self.score += score
-
-    def get_score(self) -> int:
-        """
-        Obtém a pontuação do jogador.
-
-        Retorna:
-            int: A pontuação do jogador.
-        """
-        return self.score
 
     def get_id(self) -> int:
         """

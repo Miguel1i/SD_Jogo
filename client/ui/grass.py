@@ -1,5 +1,5 @@
 import pygame
-from constants import GRASS_A, GRASS_B, GRASS_C, GRASS_D
+from ui import GRASS_A, GRASS_B, GRASS_C, GRASS_D
 import random
 
 

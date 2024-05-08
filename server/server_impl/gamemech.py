@@ -79,14 +79,14 @@ class GameMech:
         self.players[player_id] = [player_name, player_pos, player_score, player_id]
         self.world[player_pos].append(["player", player_name, player_id])
 
-    def add_egg(self, egg) -> None:
-        self.eggs[egg.get_id()] = [egg, egg.get_pos()]
-        self.world[egg.get_pos()].append(["egg", egg.get_id()])
+    def add_egg(self, egg_id, egg_pos, egg_value) -> None:
+        self.eggs[egg_id] = [egg_id, egg_pos, egg_value]
+        self.world[egg_pos].append(["egg", egg_id])
 
-    def pop_egg(self, egg) -> None:
-        self.eggs.pop(egg.get_id())
-        self.world[egg.get_pos()].remove(["egg", egg.get_id()])
-        if egg.get_value() == 2:
+    def pop_egg(self, egg_id, egg_pos, egg_value) -> None:
+        self.eggs.pop(egg_id)
+        self.world[egg_pos].remove(["egg", egg_id])
+        if egg_value == 2:
             self.golden_egg = False
 
     def winner(self):
@@ -116,8 +116,8 @@ class GameMech:
             self.golden_egg = True
             return GOLDEN_EGG, 2
 
-        all_negative = sum(-1 for egg_id in self.eggs if self.eggs[egg_id][0].get_value() == -1)
-        all_positive = sum(1 for egg_id in self.eggs if self.eggs[egg_id][0].get_value() == 1)
+        all_negative = sum(-1 for egg_id in self.eggs if self.eggs[egg_id][2] == -1)
+        all_positive = sum(1 for egg_id in self.eggs if self.eggs[egg_id][2] == 1)
 
         if all_negative == -3:
             return EGG_POSITIVE, 1
@@ -144,8 +144,8 @@ class GameMech:
         for jogador in self.players.values():
             for ovo in self.eggs.values():
                 if jogador[1] == ovo[1]:
-                    self.update_score(jogador[3], ovo[0].get_value())
-                    self.pop_egg(ovo[0])
+                    self.update_score(jogador[3], ovo[2])
+                    self.pop_egg(ovo[0], ovo[1], ovo[2])
                     return True, ovo[0]
         return False, None
 
@@ -154,8 +154,6 @@ class GameMech:
             nome, pos_anterior, score, player_id = self.players[player_id]
             directions = {"RIGHT": (1, 0), "LEFT": (-1, 0), "UP": (0, -1), "DOWN": (0, 1)}
             if direction in directions:
-                print(pos_anterior[0], pos_anterior[1])
-                print(self.world[pos_anterior])
                 new_pos: tuple = (
                     pos_anterior[0] + directions[direction][0], pos_anterior[1] + directions[direction][1])
                 mundo_pos = self.world[new_pos]

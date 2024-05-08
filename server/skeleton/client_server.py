@@ -36,7 +36,7 @@ class ClientThread(Thread):
     def process_determine_egg(self):
         egg: tuple = self.gamemech.determine_egg()
         self.current_connection.send_int(getsizeof(egg), server.INT_SIZE)
-        self.current_connection.send_tuple(egg)
+        self.current_connection.send_obj(egg, getsizeof(egg))
 
     def process_winner(self):
         winner: str = self.gamemech.winner()
@@ -46,13 +46,13 @@ class ClientThread(Thread):
     def process_check_collision(self):
         collision: tuple = self.gamemech.check_egg_collison()
         self.current_connection.send_int(getsizeof(collision), server.INT_SIZE)
-        self.current_connection.send_tuple(collision)
+        self.current_connection.send_obj(collision, getsizeof(collision))
 
     def process_calc_eggs(self):
         nr_eggs: int = self.gamemech.calculate_nr_eggs()
         coords: tuple = self.gamemech.calculate_egg_spawn(nr_eggs)
         self.current_connection.send_int(getsizeof(coords), server.INT_SIZE)
-        self.current_connection.send_tuple(coords)
+        self.current_connection.send_obj(coords, getsizeof(coords))
 
     def process_execute(self):
         player_id: int = self.current_connection.receive_int(server.INT_SIZE)
@@ -66,9 +66,11 @@ class ClientThread(Thread):
         self.current_connection.send_int(nr_eggs, server.INT_SIZE)
 
     def process_add_egg(self):
-        egg_size = self.current_connection.receive_int(server.INT_SIZE)
-        egg = self.current_connection.recieve_obj(egg_size)
-        self.gamemech.add_egg(egg)
+        egg_id = self.current_connection.receive_int(server.INT_SIZE)
+        egg_pos_size = self.current_connection.receive_int(server.INT_SIZE)
+        egg_x, egg_y = self.current_connection.receive_obj(egg_pos_size)
+        egg_value = self.current_connection.receive_int(server.INT_SIZE)
+        self.gamemech.add_egg(egg_id, (egg_x, egg_y), egg_value)
 
     def process_tick(self):
         tick: int = self.current_connection.recieve_int(server.INT_SIZE)
@@ -111,7 +113,7 @@ class ClientThread(Thread):
             logging.info("Quad x operation requested" + str(self.address))
             self.process_get_nr_quad_x()
         elif request_type == server.SET_PLAYER_OP:
-            logging.info("Add player operation requested" + str(self.address))
+            logging.info("Set player operation requested" + str(self.address))
             self.process_set_player()
         elif request_type == server.ADD_EGG_OP:
             logging.info("Add egg operation requested" + str(self.address))

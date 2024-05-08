@@ -1,5 +1,5 @@
 import pygame
-from constants import BUSH
+from ui import BUSH
 
 
 class Bush(pygame.sprite.Sprite):

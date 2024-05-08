@@ -36,12 +36,12 @@ class ClientStub:
         self.socket.send_int(player_id, client.INT_SIZE)
         return self.socket.receive_int(client.INT_SIZE)
 
-    # def calculate_egg_spawn(self):
-    #     self.socket.send_str(client.CALC_EGGS)
-    #     size = self.socket.receive_int(client.INT_SIZE)
-    #     x, y = self.socket.receive_obj(size)
-    #     return x, y
-    #
+    def calculate_egg_spawn(self):
+        self.socket.send_str(client.CALC_EGGS)
+        size = self.socket.receive_int(client.INT_SIZE)
+        x, y = self.socket.receive_obj(size)
+        return x, y
+
     def calc_time(self):
         '''
         Protocolo de comunicação com o servidor para obter o tempo
@@ -51,25 +51,25 @@ class ClientStub:
         msg_size = self.socket.receive_int(client.INT_SIZE)
         return self.socket.receive_str(msg_size)
 
-    # def determine_egg(self) -> tuple:
-    #     """
-    #     Protocolo de comunicação com o servidor para determinar a posição de um ovo
-    #     :return: tuple - posição do ovo
-    #     """
-    #     self.socket.send_str(client.DETERMINE_OP)
-    #     tuple_size = self.socket.receive_int(client.INT_SIZE)
-    #     x, y = self.socket.receive_obj(tuple_size)
-    #     return x, y
+    def determine_egg(self) -> tuple:
+        """
+        Protocolo de comunicação com o servidor para determinar a posição de um ovo
+        :return: tuple - posição do ovo
+        """
+        self.socket.send_str(client.DETERMINE_OP)
+        tuple_size = self.socket.receive_int(client.INT_SIZE)
+        x, y = self.socket.receive_obj(tuple_size)
+        return x, y
 
     def winner(self):
         self.socket.send_str(client.WINNER_OP)
         msg_size = self.socket.receive_int(client.INT_SIZE)
         return self.socket.receive_str(msg_size)
 
-    # def check_egg_collison(self):
-    #     self.socket.send_str(client.CHECK_COLLISION_OP)
-    #     tuple_size = self.socket.receive_int(client.INT_SIZE)
-    #     return self.socket.receive_obj(tuple_size)
+    def check_egg_collison(self):
+        self.socket.send_str(client.CHECK_COLLISION_OP)
+        tuple_size = self.socket.receive_int(client.INT_SIZE)
+        return self.socket.receive_obj(tuple_size)
 
     def execute(self, player_id: int, direction: str):
         self.socket.send_str(client.EXECUTE)
@@ -95,15 +95,17 @@ class ClientStub:
         self.socket.send_int(player_score, client.INT_SIZE)
         return None
 
-    # def get_nr_eggs(self) -> int:
-    #     self.socket.send_str(client.GET_NR_EGGS_OP)
-    #     return self.socket.receive_int(client.INT_SIZE)
-    #
-    # def add_egg(self, egg):
-    #     self.socket.send_str(client.ADD_EGG_OP)
-    #     self.socket.send_int(getsizeof(egg), client.INT_SIZE)
-    #     self.socket.send_obj(egg)
+    def get_nr_eggs(self) -> int:
+        self.socket.send_str(client.GET_NR_EGGS_OP)
+        return self.socket.receive_int(client.INT_SIZE)
 
+    def add_egg(self, egg_id, egg_pos, egg_value):
+        self.socket.send_str(client.ADD_EGG_OP)
+        self.socket.send_int(egg_id, client.INT_SIZE)
+        self.socket.send_int(getsizeof(egg_pos), client.INT_SIZE)
+        self.socket.send_obj(egg_pos, getsizeof(egg_pos))
+        self.socket.send_int(egg_value, client.INT_SIZE)
+        return None
     def exec_stop_client(self):
         self.socket.send_str(client.BYE_OP)
         self.socket.close()
