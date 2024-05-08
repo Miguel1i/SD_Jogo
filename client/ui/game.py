@@ -2,7 +2,7 @@ import pygame
 
 from ui.constants import GAME_TICK, FONT, FONT_SIZE, WHITE, TRANSPARENT, \
     GAME_ICON, GAME_MUSIC, EGG_COLLECT, CHANEL_MUSIC, CHANEL_EGG, NUMBER_EGGS
-from ui.player import  Player
+from ui.player import Player
 import egg
 import grass
 import bush
@@ -110,8 +110,9 @@ class Game(object):
         name: str = str(input("Qual é o teu nome? "))
         pos, skin, player_id = self.client_stub.set_player(name)
         player: Player = Player(pos[0], pos[1], size, player_id, name, skin, self.players)
-        self.client_stub.add_player(player)
         self.players.add(player)
+        self.client_stub.add_player(name, player_id, pos, player.get_score())
+
 
     def create_eggs(self, egg_size: int) -> None:
         number_eggs = self.client_stub.get_nr_eggs()
@@ -157,17 +158,18 @@ class Game(object):
             self.bushes.update(dt)
             self.bushes.draw(self.screen)
 
-            self.eggs.draw(self.screen)
+            #self.eggs.draw(self.screen)
 
             self.screen.blit(self.grid_surface, (0, 0))
             #self.check_collisions()
 
-            if self.client_stub.winner() != "False":
-                end_game = True
+            # if self.client_stub.winner() != "False":
+            #     end_game = True
 
             #self.draw_scoreboard()
             self.draw_timer()
 
             pygame.display.update(rects)
+
 
         return None

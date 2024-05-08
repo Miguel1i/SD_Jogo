@@ -68,7 +68,6 @@ class Socket:
         return json.loads(obj)
 
 
-
     def close(self):
         self._current_connection.close()
         self._current_connection = None

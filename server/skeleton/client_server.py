@@ -59,7 +59,7 @@ class ClientThread(Thread):
         direction: str = self.current_connection.receive_str(server.COMMAND_SIZE)
         new_position = self.gamemech.execute(player_id, direction)
         self.current_connection.send_int(getsizeof(new_position), server.INT_SIZE)
-        self.current_connection.send_tuple(new_position)
+        self.current_connection.send_obj(new_position, getsizeof(new_position))
 
     def process_get_nr_eggs(self):
         nr_eggs = self.gamemech.calculate_nr_eggs()
@@ -82,10 +82,14 @@ class ClientThread(Thread):
         self.current_connection.send_obj(res, getsizeof(res))
 
     def process_add_player(self):
-        player = self.current_connection.receive_player()
-        print(player)
-        #res = self.gamemech.add_player(player_name)
-        #self.current_connection.send_obj(res, getsizeof(res))
+        size = self.current_connection.receive_int(server.INT_SIZE)
+        player_name = self.current_connection.receive_str(size)
+        self.current_connection.send_str("ok")
+        player_id = self.current_connection.receive_int(server.INT_SIZE)
+        x_pos, y_pos = self.current_connection.receive_obj(server.INT_SIZE)
+        player_score = self.current_connection.receive_int(server.INT_SIZE)
+        self.gamemech.add_player(player_id, player_name, (x_pos, y_pos), player_score)
+
 
     def dispatch_request(self) -> (bool, bool):
         """
@@ -106,9 +110,18 @@ class ClientThread(Thread):
         elif request_type == server.QUADX_OP:
             logging.info("Quad x operation requested" + str(self.address))
             self.process_get_nr_quad_x()
+        elif request_type == server.SET_PLAYER_OP:
+            logging.info("Add player operation requested" + str(self.address))
+            self.process_set_player()
+        elif request_type == server.ADD_EGG_OP:
+            logging.info("Add egg operation requested" + str(self.address))
+            self.process_add_egg()
         elif request_type == server.QUADY_OP:
             logging.info("Quad y operation requested" + str(self.address))
             self.process_get_nr_quad_y()
+        elif request_type == server.ADD_PLAYER_OP:
+            logging.info("Add player operation requested" + str(self.address))
+            self.process_add_player()
         elif request_type == server.SCORE_OP:
             logging.info("Score operation requested" + str(self.address))
             self.process_get_score()
@@ -133,15 +146,6 @@ class ClientThread(Thread):
         elif request_type == server.EXECUTE:
             logging.info("Execute operation requested" + str(self.address))
             self.process_execute()
-        elif request_type == server.SET_PLAYER_OP:
-            logging.info("Add player operation requested" + str(self.address))
-            self.process_set_player()
-        elif request_type == server.ADD_PLAYER_OP:
-            logging.info("Add player operation requested" + str(self.address))
-            self.process_add_player()
-        elif request_type == server.ADD_EGG_OP:
-            logging.info("Add egg operation requested" + str(self.address))
-            self.process_add_egg()
         elif request_type == server.GET_NR_EGGS_OP:
             logging.info("Get nr eggs operation requested" + str(self.address))
             self.process_get_nr_eggs()

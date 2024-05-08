@@ -98,26 +98,6 @@ class Player(pygame.sprite.DirtySprite):
         """
         return self.pos
 
-    def serialize(self):
-        """
-        Serialize the Player object into a dictionary containing only necessary attributes.
-        """
-        return {
-            "player_id": self.player_id,
-            "name": self.name,
-            "pos": self.pos,
-            "score": self.score
-        }
-
-    def deserialize(self, data):
-        """
-        Deserialize the dictionary data and update the Player object with received attributes.
-        """
-        self.player_id = data["player_id"]
-        self.name = data["name"]
-        self.pos = data["pos"]
-        self.score = data["score"]
-
     def update(self, game: object, cs: ClientStub) -> None:
         """
         Atualiza a posição do jogador com base nas teclas pressionadas.
