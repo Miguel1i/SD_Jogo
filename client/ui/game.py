@@ -54,8 +54,8 @@ class Game(object):
         # Clock
         self.clock = pygame.time.Clock()
         # Music
-        pygame.mixer.init()
-        self.sound_effect(GAME_MUSIC, 0.2, -1, CHANNEL_MUSIC)
+        # pygame.mixer.init()
+        # self.sound_effect(GAME_MUSIC, 0.2, -1, CHANNEL_MUSIC)
 
     @staticmethod
     def sound_effect(music: str, volume: float, repeat: int, channel: int) -> None:
@@ -147,6 +147,14 @@ class Game(object):
                     arbusto = bush.Bush(x, y, 0, bush_size, self.bushes)
                     self.bushes.add(arbusto)
 
+    # def create_bushes(self, bush_size: int) -> None:
+    #     arbustos = self.client_stub.get_bushes()
+    #     for arbusto in arbustos.values():
+    #         x, y = arbusto[1]
+    #         print(x, y)
+    #         novo_arbusto = bush.Bush(x, y, 0, bush_size, self.bushes)
+    #         self.bushes.add(novo_arbusto)
+
     def create_grass(self, grass_size: int) -> None:
         """
         Cria erva no ecrã
@@ -168,24 +176,48 @@ class Game(object):
         pos, skin, player_id = self.client_stub.set_player(name)
         player: Player = Player(pos[0], pos[1], size, player_id, name, skin, self.players)
         self.players.add(player)
-        self.client_stub.add_player(name, player_id, pos, 0)
+        self.client_stub.add_player(name, player_id, pos, 0, skin)
 
-    def create_eggs(self, egg_size: int) -> None:
+    # def create_eggs(self, egg_size: int) -> None:
+    #     """
+    #     Método para criar ovos
+    #     :param egg_size: tamanho do ovo
+    #     :return: None
+    #     """
+    #     number_eggs = self.client_stub.get_nr_eggs()
+    #     for _ in range(number_eggs):
+    #         new_id = 0
+    #         if self.eggs:
+    #             new_id = max([ovo.get_id() for ovo in self.eggs]) + 1
+    #         pos_x, pos_y = self.client_stub.calculate_egg_spawn()
+    #         skin, value = self.client_stub.determine_egg()
+    #         new_egg = egg.Egg(pos_x, pos_y, egg_size, skin, new_id, value, self.eggs)
+    #         self.eggs.add(new_egg)
+    #         self.client_stub.add_egg(new_id, (pos_x, pos_y), value)
+
+    def update_eggs(self):
         """
-        Método para criar ovos
-        :param egg_size: tamanho do ovo
+        Atualiza a posição dos ovos
         :return: None
         """
-        number_eggs = self.client_stub.get_nr_eggs()
-        for _ in range(number_eggs):
-            new_id = 0
-            if self.eggs:
-                new_id = max([ovo.get_id() for ovo in self.eggs]) + 1
-            pos_x, pos_y = self.client_stub.calculate_egg_spawn()
-            skin, value = self.client_stub.determine_egg()
-            new_egg = egg.Egg(pos_x, pos_y, egg_size, skin, new_id, value, self.eggs)
+        self.eggs.empty()
+        ovos = self.client_stub.update_eggs()
+        for egg_id, egg_pos, egg_value, skin in ovos.values():
+            new_egg = egg.Egg(egg_pos[0], egg_pos[1], self.grid_size, skin, egg_id, egg_value, self.eggs)
             self.eggs.add(new_egg)
-            self.client_stub.add_egg(new_id, (pos_x, pos_y), value)
+        self.eggs.update(self, self.client_stub)
+        rect_1 = self.eggs.draw(self.screen)
+        pygame.display.update(rect_1)
+
+    # def update_players(self):
+    #     server_players = self.client_stub.get_all_players()
+    #     for id, name, pos, score, skin in server_players.values():
+    #         player: Player = Player(pos[0], pos[1], self.grid_size, id, name, skin, self.players)
+    #         self.players.add(player)
+    #         self.client_stub.add_player(name, id, pos, 0, skin)
+    #     self.players.update(self, self.client_stub)
+    #     rect_2 = self.players.draw(self.screen)
+    #     pygame.display.update(rect_2)
 
     def check_collisions(self) -> None:
         """
@@ -197,10 +229,7 @@ class Game(object):
             self.get_egg(egg_id).kill()
             self.eggs.remove(egg_id)
             self.sound_effect(EGG_COLLECT, 0.5, 0, CHANNEL_EGG)
-            self.create_eggs(self.grid_size)
-            self.eggs.update(self, self.client_stub)
-            rect_1 = self.eggs.draw(self.screen)
-            pygame.display.update(rect_1)
+            self.update_eggs()
 
     def get_egg(self, egg_id) -> egg.Egg | None:
         """
@@ -218,10 +247,9 @@ class Game(object):
         Inicia o jogo
         :return: None
         """
-        self.create_players(self.grid_size)
-        self.create_eggs(self.grid_size)
-        self.create_grass(self.grid_size)
         self.create_bushes(self.grid_size)
+        self.create_players(self.grid_size)
+        self.create_grass(self.grid_size)
 
         end_game = False
         while not end_game:
@@ -230,16 +258,20 @@ class Game(object):
                 if event.type == pygame.QUIT:
                     end_game = True
             self.grass.draw(self.screen)
-            self.players.update(self, self.client_stub)
-            rects = self.players.draw(self.screen)
             self.bushes.update(dt)
             self.bushes.draw(self.screen)
-            self.eggs.draw(self.screen)
+
+            self.players.update(self, self.client_stub)
+            rects = self.players.draw(self.screen)
+
             self.screen.blit(self.grid_surface, (0, 0))
+
+            self.update_eggs()
             self.check_collisions()
             if self.client_stub.winner() != "False":
                 end_game = True
             self.draw_scoreboard()
+
             self.draw_timer()
             pygame.display.update(rects)
 

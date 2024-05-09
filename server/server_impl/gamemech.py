@@ -49,7 +49,23 @@ class GameMech:
     def calculate_nr_eggs(self) -> int:
         if len(self.eggs) == 0:
             return 5
+        elif len(self.eggs) + 1 >= 6:
+            return 0
         return 1
+
+    def update_eggs(self):
+        self.create_eggs()
+        return self.eggs
+
+    def create_eggs(self):
+        nr_eggs = self.calculate_nr_eggs()
+        if nr_eggs == 0:
+            return
+        for _ in range(nr_eggs):
+            x, y = self.calculate_egg_spawn(nr_eggs)
+            skin, value = self.determine_egg()
+            egg_id = max(self.eggs.keys()) + 1 if self.eggs else 0
+            self.add_egg(egg_id, (x, y), value, skin)
 
     def calculate_egg_spawn(self, nr_eggs: int):
         for _ in range(nr_eggs):
@@ -75,12 +91,12 @@ class GameMech:
         else:
             return 0
 
-    def add_player(self, player_id, player_name, player_pos, player_score) -> None:
-        self.players[player_id] = [player_name, player_pos, player_score, player_id]
+    def add_player(self, player_id, player_name, player_pos, player_score, player_skin) -> None:
+        self.players[player_id] = [player_name, player_pos, player_score, player_id, player_skin]
         self.world[player_pos].append(["player", player_name, player_id])
 
-    def add_egg(self, egg_id, egg_pos, egg_value) -> None:
-        self.eggs[egg_id] = [egg_id, egg_pos, egg_value]
+    def add_egg(self, egg_id, egg_pos, egg_value, egg_skin) -> None:
+        self.eggs[egg_id] = [egg_id, egg_pos, egg_value, egg_skin]
         self.world[egg_pos].append(["egg", egg_id])
 
     def pop_egg(self, egg_id, egg_pos, egg_value) -> None:
@@ -149,9 +165,15 @@ class GameMech:
                     return True, ovo[0]
         return False, None
 
+    def get_all_players(self):
+        return self.players
+
+    def get_bushes(self):
+        return self.bushes
+
     def execute(self, player_id: int, direction: str):
         if player_id in self.players:
-            nome, pos_anterior, score, player_id = self.players[player_id]
+            nome, pos_anterior, score, player_id, player_skin = self.players[player_id]
             directions = {"RIGHT": (1, 0), "LEFT": (-1, 0), "UP": (0, -1), "DOWN": (0, 1)}
             if direction in directions:
                 new_pos: tuple = (
@@ -160,9 +182,9 @@ class GameMech:
                 if not mundo_pos or mundo_pos[0][0] != "obst" and mundo_pos[0][0] != "player":
                     self.world[pos_anterior].remove(["player", nome, player_id])
                     self.world[new_pos].append(["player", nome, player_id])
-                    self.players[player_id] = [nome, new_pos, score, player_id]
+                    self.players[player_id] = [nome, new_pos, score, player_id, player_skin]
                     return new_pos
                 else:
-                    self.players[player_id] = [nome, pos_anterior, score, player_id]
+                    self.players[player_id] = [nome, pos_anterior, score, player_id, player_skin]
                     old_pos = tuple(pos_anterior)
                     return old_pos

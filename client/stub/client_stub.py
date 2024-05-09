@@ -36,11 +36,11 @@ class ClientStub:
         self.socket.send_int(player_id, client.INT_SIZE)
         return self.socket.receive_int(client.INT_SIZE)
 
-    def calculate_egg_spawn(self):
-        self.socket.send_str(client.CALC_EGGS)
-        size = self.socket.receive_int(client.INT_SIZE)
-        x, y = self.socket.receive_obj(size)
-        return x, y
+    # def calculate_egg_spawn(self):
+    #     self.socket.send_str(client.CALC_EGGS)
+    #     size = self.socket.receive_int(client.INT_SIZE)
+    #     x, y = self.socket.receive_obj(size)
+    #     return x, y
 
     def calc_time(self):
         '''
@@ -51,15 +51,15 @@ class ClientStub:
         msg_size = self.socket.receive_int(client.INT_SIZE)
         return self.socket.receive_str(msg_size)
 
-    def determine_egg(self) -> tuple:
-        """
-        Protocolo de comunicação com o servidor para determinar a posição de um ovo
-        :return: tuple - posição do ovo
-        """
-        self.socket.send_str(client.DETERMINE_OP)
-        tuple_size = self.socket.receive_int(client.INT_SIZE)
-        x, y = self.socket.receive_obj(tuple_size)
-        return x, y
+    # def determine_egg(self) -> tuple:
+    #     """
+    #     Protocolo de comunicação com o servidor para determinar a posição de um ovo
+    #     :return: tuple - posição do ovo
+    #     """
+    #     self.socket.send_str(client.DETERMINE_OP)
+    #     tuple_size = self.socket.receive_int(client.INT_SIZE)
+    #     x, y = self.socket.receive_obj(tuple_size)
+    #     return x, y
 
     def winner(self):
         self.socket.send_str(client.WINNER_OP)
@@ -85,7 +85,7 @@ class ClientStub:
         size = self.socket.receive_int(client.INT_SIZE)
         return self.socket.receive_obj(size)
 
-    def add_player(self, player_name, player_id, player_pos, player_score):
+    def add_player(self, player_name, player_id, player_pos, player_score, player_skin):
         self.socket.send_str(client.ADD_PLAYER_OP)
         self.socket.send_int(getsizeof(player_name), client.INT_SIZE)
         self.socket.send_str(player_name)
@@ -93,19 +93,37 @@ class ClientStub:
         self.socket.send_int(player_id, client.INT_SIZE)
         self.socket.send_obj(player_pos, client.INT_SIZE)
         self.socket.send_int(player_score, client.INT_SIZE)
+        self.socket.send_int(getsizeof(player_skin), client.INT_SIZE)
+        self.socket.send_str(player_skin)
         return None
 
-    def get_nr_eggs(self) -> int:
-        self.socket.send_str(client.GET_NR_EGGS_OP)
-        return self.socket.receive_int(client.INT_SIZE)
+    # def get_all_players(self):
+    #     self.socket.send_str(client.UPDATE_PLAYERS_OP)
+    #     players_size = self.socket.receive_int(client.INT_SIZE)
+    #     return self.socket.receive_obj(players_size)
 
-    def add_egg(self, egg_id, egg_pos, egg_value):
-        self.socket.send_str(client.ADD_EGG_OP)
-        self.socket.send_int(egg_id, client.INT_SIZE)
-        self.socket.send_int(getsizeof(egg_pos), client.INT_SIZE)
-        self.socket.send_obj(egg_pos, getsizeof(egg_pos))
-        self.socket.send_int(egg_value, client.INT_SIZE)
-        return None
+    def get_bushes(self):
+        self.socket.send_str(client.GET_BUSHES_OP)
+        bushes_size = self.socket.receive_int(client.INT_SIZE)
+        return self.socket.receive_obj(bushes_size)
+
+    def update_eggs(self):
+        self.socket.send_str(client.UPDATE_EGGS_OP)
+        eggs_size = self.socket.receive_int(client.INT_SIZE)
+        return self.socket.receive_obj(eggs_size)
+
+    # def get_nr_eggs(self) -> int:
+    #     self.socket.send_str(client.GET_NR_EGGS_OP)
+    #     return self.socket.receive_int(client.INT_SIZE)
+
+    # def add_egg(self, egg_id, egg_pos, egg_value):
+    #     self.socket.send_str(client.ADD_EGG_OP)
+    #     self.socket.send_int(egg_id, client.INT_SIZE)
+    #     self.socket.send_int(getsizeof(egg_pos), client.INT_SIZE)
+    #     self.socket.send_obj(egg_pos, getsizeof(egg_pos))
+    #     self.socket.send_int(egg_value, client.INT_SIZE)
+    #     return None
+
     def exec_stop_client(self):
         self.socket.send_str(client.BYE_OP)
         self.socket.close()

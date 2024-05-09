@@ -19,6 +19,9 @@ SCORE_OP = "score   "
 TIME_OP = "time    "
 STOP_SERVER_OP = "stop    "
 CALC_EGGS = "calceggs "
+GET_BUSHES_OP = "getbush "
+UPDATE_EGGS_OP = "updeggs "
+UPDATE_PLAYERS_OP = "updplay "
 # Connection
 PORT = 35000
 SERVER_ADDRESS = "localhost"

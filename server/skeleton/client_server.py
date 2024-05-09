@@ -15,6 +15,11 @@ class ClientThread(Thread):
     def process_update(self):
         pass
 
+    def process_get_bushes(self):
+        bushes: dict = self.gamemech.get_bushes()
+        self.current_connection.send_int(getsizeof(bushes), server.INT_SIZE)
+        self.current_connection.send_obj(bushes, getsizeof(bushes))
+
     def process_get_nr_quad_x(self):
         nr_x: int = self.gamemech.get_nr_x()
         self.current_connection.send_int(nr_x, server.INT_SIZE)
@@ -42,6 +47,11 @@ class ClientThread(Thread):
         winner: str = self.gamemech.winner()
         self.current_connection.send_int(getsizeof(winner), server.INT_SIZE)
         self.current_connection.send_str(winner)
+
+    def process_get_all_players(self):
+        players: dict = self.gamemech.get_all_players()
+        self.current_connection.send_int(getsizeof(players), server.INT_SIZE)
+        self.current_connection.send_obj(players, getsizeof(players))
 
     def process_check_collision(self):
         collision: tuple = self.gamemech.check_egg_collison()
@@ -90,7 +100,14 @@ class ClientThread(Thread):
         player_id = self.current_connection.receive_int(server.INT_SIZE)
         x_pos, y_pos = self.current_connection.receive_obj(server.INT_SIZE)
         player_score = self.current_connection.receive_int(server.INT_SIZE)
-        self.gamemech.add_player(player_id, player_name, (x_pos, y_pos), player_score)
+        skin_size = self.current_connection.receive_int(server.INT_SIZE)
+        player_skin = self.current_connection.receive_str(skin_size)
+        self.gamemech.add_player(player_id, player_name, (x_pos, y_pos), player_score, player_skin)
+
+    def process_update_eggs(self):
+        eggs = self.gamemech.update_eggs()
+        self.current_connection.send_int(getsizeof(eggs), server.INT_SIZE)
+        self.current_connection.send_obj(eggs, getsizeof(eggs))
 
 
     def dispatch_request(self) -> (bool, bool):
@@ -151,6 +168,15 @@ class ClientThread(Thread):
         elif request_type == server.GET_NR_EGGS_OP:
             logging.info("Get nr eggs operation requested" + str(self.address))
             self.process_get_nr_eggs()
+        elif request_type == server.UPDATE_EGGS_OP:
+            logging.info("Update eggs operation requested" + str(self.address))
+            self.process_update_eggs()
+        elif request_type == server.UPDATE_PLAYERS_OP:
+            logging.info("Update players operation requested" + str(self.address))
+            self.process_get_all_players()
+        elif request_type == server.GET_BUSHES_OP:
+            logging.info("Get bushes operation requested" + str(self.address))
+            self.process_get_bushes()
         return keep_running, last_request
 
     def run(self):

@@ -14,6 +14,9 @@ GET_NR_EGGS_OP = "get_eggs"
 ADD_EGG_OP = "add_egg "
 STOP_SERVER_OP = "stop    "
 CALC_EGGS = "calceggs "
+GET_BUSHES_OP = "getbush "
+UPDATE_EGGS_OP = "updeggs "
+UPDATE_PLAYERS_OP = "updplay "
 # Constants
 COMMAND_SIZE = 9
 INT_SIZE = 8
