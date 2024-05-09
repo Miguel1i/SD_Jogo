@@ -61,31 +61,59 @@ class ClientStub:
     #     x, y = self.socket.receive_obj(tuple_size)
     #     return x, y
 
-    def winner(self):
+    def winner(self) -> str:
+        """
+        Protocolo de comunicação com o servidor para obter o vencedor
+        :return: str - nome do vencedor
+        """
         self.socket.send_str(client.WINNER_OP)
         msg_size = self.socket.receive_int(client.INT_SIZE)
         return self.socket.receive_str(msg_size)
 
-    def check_egg_collison(self):
+    def check_egg_collison(self) -> tuple:
+        """
+        Protocolo de comunicação com o servidor para verificar colisão com ovo
+        :return: tuple - posição do ovo
+        """
         self.socket.send_str(client.CHECK_COLLISION_OP)
         tuple_size = self.socket.receive_int(client.INT_SIZE)
         return self.socket.receive_obj(tuple_size)
 
-    def execute(self, player_id: int, direction: str):
+    def execute(self, player_id: int, direction: str) -> tuple:
+        """
+        Protocolo de comunicação com o servidor para executar o movimento de um jogador
+        :param player_id: int - id do jogador
+        :param direction: str - direção do movimento
+        :return: tuple - nova posição do jogador
+        """
         self.socket.send_str(client.EXECUTE)
         self.socket.send_int(player_id, client.INT_SIZE)
         self.socket.send_str(direction)
         tuple_size = self.socket.receive_int(client.INT_SIZE)
         return self.socket.receive_obj(tuple_size)
 
-    def set_player(self, name):
+    def set_player(self, name: str) -> tuple:
+        """
+        Protocolo de comunicação com o servidor para setar um jogador coordenadas.
+        :param name: nome do jogador
+        :return: posicao, skin e id do jogador
+        """
         self.socket.send_str(client.SET_PLAYER_OP)
         self.socket.send_int(getsizeof(name), client.INT_SIZE)
         self.socket.send_str(name)
         size = self.socket.receive_int(client.INT_SIZE)
         return self.socket.receive_obj(size)
 
-    def add_player(self, player_name, player_id, player_pos, player_score, player_skin):
+    def add_player(self, player_name: str, player_id: id, player_pos: tuple, player_score: int, player_skin: str) -> None:
+        """
+        Protocolo de comunicação com o servidor para adicionar um jogador
+        :param player_name: nome do jogador
+        :param player_id: id do jogador
+        :param player_pos: posição do jogador
+        :param player_score: score do jogador
+        :param player_skin: skin do jogador
+        :return: None
+        """
         self.socket.send_str(client.ADD_PLAYER_OP)
         self.socket.send_int(getsizeof(player_name), client.INT_SIZE)
         self.socket.send_str(player_name)
@@ -102,10 +130,10 @@ class ClientStub:
     #     players_size = self.socket.receive_int(client.INT_SIZE)
     #     return self.socket.receive_obj(players_size)
 
-    def get_bushes(self):
-        self.socket.send_str(client.GET_BUSHES_OP)
-        bushes_size = self.socket.receive_int(client.INT_SIZE)
-        return self.socket.receive_obj(bushes_size)
+    # def get_bushes(self):
+    #     self.socket.send_str(client.GET_BUSHES_OP)
+    #     bushes_size = self.socket.receive_int(client.INT_SIZE)
+    #     return self.socket.receive_obj(bushes_size)
 
     def update_eggs(self):
         self.socket.send_str(client.UPDATE_EGGS_OP)
