@@ -242,6 +242,9 @@ class Game(object):
                 return ovo
         return None
 
+    # def start_game(self):
+    #     return bool(self.client_stub.execute_start_game())
+
     def run(self) -> None:
         """
         Inicia o jogo
@@ -252,6 +255,8 @@ class Game(object):
         self.create_grass(self.grid_size)
 
         end_game = False
+        # self.start_game()
+
         while not end_game:
             dt = self.clock.tick(GAME_TICK)
             for event in pygame.event.get():

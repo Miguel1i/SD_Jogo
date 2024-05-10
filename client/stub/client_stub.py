@@ -112,6 +112,10 @@ class ClientStub:
         eggs_size = self.socket.receive_int(client.INT_SIZE)
         return self.socket.receive_obj(eggs_size)
 
+    # def execute_start_game(self) -> int:
+    #     self.socket.send_str(client.START_GAME)
+    #     return self.socket.receive.int(client.INT_SIZE)
+
     # def get_nr_eggs(self) -> int:
     #     self.socket.send_str(client.GET_NR_EGGS_OP)
     #     return self.socket.receive_int(client.INT_SIZE)
@@ -151,11 +155,11 @@ class ClientStub:
     #     # terminate the server
     #     self.stop_server()
 
-#def main():
+# def main():
 #
 #    client = ClientMathServer(SERVER_ADDRESS, PORT)
 #    client.run()
 
 
-#if __name__=="__main__":
+# if __name__=="__main__":
 #    main()

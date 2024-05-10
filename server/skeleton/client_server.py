@@ -3,17 +3,26 @@ from threading import Thread
 import logging
 import server_impl as server
 from server_impl.gamemech import GameMech
+from skeleton.server_shared_state import ServerSharedState
 
 
 class ClientThread(Thread):
     def __init__(self, gamemech: GameMech, current_connection, address):
+        # def __init(self, shared_state: ServerSharedState, current_connection, address):
+        # self.shared_state = shared_state
+        # self.shared_state.add_client()
         self.current_connection = current_connection
         self.gamemech: GameMech = gamemech
+        # self.gamemech = self.shared_state.get_gamemech()
         self.address = address
         Thread.__init__(self)
 
     def process_update(self):
         pass
+
+    # def process_start_game(self):
+    #     self.shared_state.get_start_game_sem().acquire()
+    #     self.current_connection.send_int(1, server.INT_SIZE)
 
     def process_get_bushes(self):
         bushes: dict = self.gamemech.get_bushes()
@@ -109,7 +118,6 @@ class ClientThread(Thread):
         self.current_connection.send_int(getsizeof(eggs), server.INT_SIZE)
         self.current_connection.send_obj(eggs, getsizeof(eggs))
 
-
     def dispatch_request(self) -> (bool, bool):
         """
         Calls process functions based on type of request.
@@ -181,10 +189,10 @@ class ClientThread(Thread):
 
     def run(self):
         # While client connected, wait for its demmands and dispatch the requests
-        #with self.current_connection:
+        # with self.current_connection:
         last_request = False
-        #If it is not the last request receive the request
+        # If it is not the last request receive the request
         while not last_request:
             keep_running, last_request = self.dispatch_request()
-        #If it is the last request, client is disconnecting...
+        # If it is the last request, client is disconnecting...
         logging.debug("Client " + str(self.address) + " disconnected")

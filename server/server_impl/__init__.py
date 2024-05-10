@@ -17,6 +17,7 @@ CALC_EGGS = "calceggs "
 GET_BUSHES_OP = "getbush "
 UPDATE_EGGS_OP = "updeggs "
 UPDATE_PLAYERS_OP = "updplay "
+START_GAME = "start   "
 # Constants
 COMMAND_SIZE = 9
 INT_SIZE = 8
@@ -35,6 +36,7 @@ SPAWN_POINT_A: tuple = (5, 5)
 SPAWN_POINT_B: tuple = (6, 5)
 PLAYER_1: str = "assets/Sprites/player_1.png"
 PLAYER_2: str = "assets/Sprites/player_2.png"
+MAX_CLIENTS: int = 2
 # Connection
 PORT = 35000
 SERVER_ADDRESS = "localhost"

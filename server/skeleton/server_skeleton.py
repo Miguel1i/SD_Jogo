@@ -6,12 +6,14 @@ from server_impl.gamemech import GameMech
 from server_impl.gamemech import GameMech
 from socket_impl.sockets import Socket
 from server_impl import LOG_FILENAME, PORT, SERVER_ADDRESS, LOG_LEVEL
+from skeleton.server_shared_state import ServerSharedState
 
 import client_server
 
 
 class GameServerSkeleton:
     def __init__(self, gamemech: GameMech) -> None:
+        # def __init__(self, shared_state: ServerSharedState) -> None:
         """
         Creates a client given the server server to use
         """
@@ -19,7 +21,7 @@ class GameServerSkeleton:
         logging.basicConfig(filename=LOG_FILENAME,
                             level=LOG_LEVEL,
                             format='%(asctime)s (%(levelname)s): %(message)s')
-
+        # self.shared_state = shared_state
         self.gamemech = gamemech
 
     # ------------ execution of the service ----------------------------------------
@@ -90,6 +92,8 @@ class GameServerSkeleton:
             current_connection, address = socket.server_connect()
             logging.debug("Client " + str(address) + " just connected")
             client_server.ClientThread(self.gamemech, current_connection, address).start()
+            # client_server.ClientThread(self.shared_state, current_connection, address).start()
+            
             # While client connected, wait for its demmands and dispatch the requests
             # with current_connection:
             #    last_request = False

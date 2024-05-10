@@ -22,7 +22,7 @@ CALC_EGGS = "calceggs "
 GET_BUSHES_OP = "getbush "
 UPDATE_EGGS_OP = "updeggs "
 UPDATE_PLAYERS_OP = "updplay "
+START_GAME = "start   "
 # Connection
 PORT = 35000
 SERVER_ADDRESS = "localhost"
-
