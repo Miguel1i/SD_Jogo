@@ -6,6 +6,7 @@ import egg
 import grass
 import bush
 from stub.client_stub import ClientStub
+from second_player import SecondPlayer
 
 
 class Game(object):
@@ -249,8 +250,8 @@ class Game(object):
         objects: dict = self.client_stub.get_objects()
         for object_id in objects:
             if int(object_id) != self.id:
-                player = Player(objects[object_id][1][0], objects[object_id][1][1], size, int(object_id),
-                                objects[object_id][0], objects[object_id][4], self.players)
+                player = SecondPlayer(objects[object_id][1][0], objects[object_id][1][1], size, int(object_id),
+                                      objects[object_id][0], objects[object_id][4], self.players)
                 self.players.add(player)
 
     def update_objects(self) -> None:

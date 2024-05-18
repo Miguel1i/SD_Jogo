@@ -2,7 +2,7 @@ import pygame
 from client.stub.client_stub import ClientStub
 
 
-class Player(pygame.sprite.DirtySprite):
+class SecondPlayer(pygame.sprite.DirtySprite):
     """
     Classe Player que representa um jogador no jogo.
 
@@ -100,28 +100,5 @@ class Player(pygame.sprite.DirtySprite):
             game (object): O objeto do jogo.
             cs (ClientStub): O stub do cliente.
         """
-        key = pygame.key.get_pressed()
-
-        if key[pygame.K_LEFT]:
-            new_pos: list[int] = list(cs.step(self.player_id, "LEFT"))
-            self.pos = new_pos
-            self.rect.x = new_pos[0] * self.size
-            self.rect.y = new_pos[1] * self.size
-        if key[pygame.K_RIGHT]:
-            new_pos: list[int] = list(cs.step(self.player_id, "RIGHT"))
-            self.pos = new_pos
-            self.rect.x = new_pos[0] * self.size
-            self.rect.y = new_pos[1] * self.size
-        if key[pygame.K_UP]:
-            new_pos: list[int] = list(cs.step(self.player_id, "UP"))
-            self.pos = new_pos
-            self.rect.x = new_pos[0] * self.size
-            self.rect.y = new_pos[1] * self.size
-        if key[pygame.K_DOWN]:
-            new_pos: list[int] = list(cs.step(self.player_id, "DOWN"))
-            self.pos = new_pos
-            self.rect.x = new_pos[0] * self.size
-            self.rect.y = new_pos[1] * self.size
-
         # Mantém visível
         self.dirty: int = 1
