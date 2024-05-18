@@ -34,4 +34,4 @@ PLAYER_2: str = "assets/Sprites/player_2.png"
 MAX_CLIENTS: int = 2
 # Connection
 PORT: int = 35000
-SERVER_ADDRESS: str = "192.168.1.91"
+SERVER_ADDRESS: str = "localhost"

@@ -19,4 +19,4 @@ STEP_OP: str = "step    "
 GET_OBJECTS: str = "get_obj "
 # Connection
 PORT: int = 35000
-SERVER_ADDRESS: str = "192.168.1.91"
+SERVER_ADDRESS: str = "localhost"
