@@ -5,13 +5,14 @@ from skeleton.server_shared_state import ServerSharedState
 
 
 def main():
-    gamemech = GameMech(GRID_X, GRID_Y)
-    skeleton = GameServerSkeleton(gamemech)
+    """
+    Função principal do servidor.
+    :return: None
+    """
+    gamemech: GameMech = GameMech(GRID_X, GRID_Y)
+    server_state: ServerSharedState = ServerSharedState(gamemech)
+    skeleton: GameServerSkeleton = GameServerSkeleton(server_state)
     skeleton.run()
-    # gamemech = GameMech(GRID_X, GRID_Y)
-    # server_state = ServerSharedState(gamemech)
-    # skeleton = GameServerSkeleton(server_state)
-    # skeleton.run()
 
 
 if __name__ == "__main__":

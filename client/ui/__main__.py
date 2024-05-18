@@ -5,6 +5,10 @@ from ui.game import Game
 
 
 def main():
+    """
+    Função principal que inicializa o jogo.
+    :return: None
+    """
     pygame.init()
     client_stub: ClientStub = ClientStub(SERVER_ADDRESS, PORT)
     game: Game = Game(client_stub, GRID_SIZE)

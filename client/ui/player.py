@@ -14,6 +14,15 @@ class Player(pygame.sprite.DirtySprite):
         id (int): O id do jogador.
         name (str): O nome do jogador.
         score (int): A pontuação do jogador.
+        skin (str): A skin do jogador.
+
+    Métodos:
+        get_size: tuple - obtém o tamanho do jogador
+        get_id: int - obtém o id do jogador
+        get_name: str - obtém o nome do jogador
+        get_pos: tuple - obtém a posição do jogador
+        set_rect: None - define a posição do jogador
+        update: None - atualiza a posição do jogador
     """
 
     def __init__(self, pos_x: int, pos_y: int, size: int, player_id: int, name: str, skin: str,
@@ -42,7 +51,6 @@ class Player(pygame.sprite.DirtySprite):
         self.pos: tuple[int, int] = (pos_x, pos_y)
         self.player_id: int = player_id
         self.name: str = name
-
 
     def get_size(self) -> tuple[int, int]:
         """
@@ -80,6 +88,10 @@ class Player(pygame.sprite.DirtySprite):
         """
         return self.pos
 
+    def set_rect(self, pos: list) -> None:
+        self.rect.x = pos[0] * self.size
+        self.rect.y = pos[1] * self.size
+
     def update(self, game: object, cs: ClientStub) -> None:
         """
         Atualiza a posição do jogador com base nas teclas pressionadas.
@@ -91,22 +103,22 @@ class Player(pygame.sprite.DirtySprite):
         key = pygame.key.get_pressed()
 
         if key[pygame.K_LEFT]:
-            new_pos: list[int] = list(cs.execute(self.player_id, "LEFT"))
+            new_pos: list[int] = list(cs.step(self.player_id, "LEFT"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
         if key[pygame.K_RIGHT]:
-            new_pos: list[int] = list(cs.execute(self.player_id, "RIGHT"))
+            new_pos: list[int] = list(cs.step(self.player_id, "RIGHT"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
         if key[pygame.K_UP]:
-            new_pos: list[int] = list(cs.execute(self.player_id, "UP"))
+            new_pos: list[int] = list(cs.step(self.player_id, "UP"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size
         if key[pygame.K_DOWN]:
-            new_pos: list[int] = list(cs.execute(self.player_id, "DOWN"))
+            new_pos: list[int] = list(cs.step(self.player_id, "DOWN"))
             self.pos = new_pos
             self.rect.x = new_pos[0] * self.size
             self.rect.y = new_pos[1] * self.size

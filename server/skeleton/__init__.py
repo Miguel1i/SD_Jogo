@@ -1,11 +1,11 @@
 # Operations
-BYE_OP = "bye     "
-STOP_SERVER_OP = "stop    "
+BYE_OP: str = "bye     "
+STOP_SERVER_OP: str = "stop    "
 
 # Connection
-PORT = 35000
-SERVER_ADDRESS = "localhost"
+PORT: int = 35000
+SERVER_ADDRESS: str = "localhost"
 
 # Constants
-LOG_FILENAME = "server.log"
-LOG_LEVEL = 1
+LOG_FILENAME: str = "server.log"
+LOG_LEVEL: int = 1

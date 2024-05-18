@@ -1,89 +1,142 @@
-import pickle
 import socket
 import json
-import server_impl
 
 
-#
-# Existem duas funções estáticas que permitem criar os sockets no lado do cliente e do servidor.
-# Elas retornam uma instância da classe Socket, permitindo depois usar esse objeto criado para
-# chamar as funções.
-# Na função server_connect, é criado um novo socket que vai responsabilizar-se por interagir
-# com o cliente.
-# A alternativa a este desenho seria ter uma função no main de cada um dos lados, chamando estas funções.
 class Socket:
-    def __init__(self, connection, port):
+    """
+    Classe que representa uma ligação por sockets.
+
+    Atributos:
+        _current_connection: socket - ligação atual
+        _port: int - porta
+
+    Métodos:
+        get_address: tuple - obtém o endereço
+        receive_int: int - recebe um inteiro
+        send_int: None - envia um inteiro
+        receive_str: str - recebe uma string
+        send_str: None - envia uma string
+        send_obj: None - envia um objeto
+        receive_obj: object - recebe um objeto
+        close: None - fecha a ligação
+        server_connect: tuple - conecta-se ao servidor
+        create_server_connection: Socket - cria uma ligação como servidor
+        create_client_connection: Socket - cria uma ligação como cliente
+    """
+
+    def __init__(self, connection, port: int):
+        """
+        Construtor da classe Socket.
+        :param connection: socket - ligação
+        :param port: int - porta
+        """
         self._current_connection = connection
         self._port = port
 
     @property
-    def port(self):
+    def port(self) -> int:
+        """
+        Propriedade que obtém a porta.
+        :return: int - porta
+        """
         return self._port
 
-    def get_address(self):
+    def get_address(self) -> tuple:
+        """
+        Obtém o endereço da ligação.
+        :return: tuple - endereço
+        """
         return self._current_connection.getpeername()
 
     @property
-    def current_connection(self):
+    def current_connection(self) -> socket:
+        """
+        Propriedade que obtém a ligação atual.
+        :return: socket - ligação atual
+        """
         return self._current_connection
 
     def receive_int(self, n_bytes: int) -> int:
         """
-        :param n_bytes: The number of bytes to read from the current connection
-        :return: The next integer read from the current connection
+        Protocolo de comunicação para receber um inteiro.
+        :param n_bytes: int - número de bytes
+        :return: int - inteiro
         """
         data = self._current_connection.recv(n_bytes)
         return int.from_bytes(data, byteorder='big', signed=True)
 
     def send_int(self, value: int, n_bytes: int) -> None:
         """
-        :param value: The integer value to be sent to the current connection
-        :param n_bytes: The number of bytes to send
+        Protocolo de comunicação para enviar um inteiro.
+        :param value: int - valor
+        :param n_bytes: int - número de bytes
+        :return: None
         """
         self._current_connection.send(value.to_bytes(n_bytes, byteorder="big", signed=True))
 
     def receive_str(self, n_bytes: int) -> str:
         """
-        :param n_bytes: The number of bytes to read from the current connection
-        :return: The next string read from the current connection
+        Protocolo de comunicação para receber uma string.
+        :param n_bytes: int - número de bytes
+        :return: str - string
         """
         data = self._current_connection.recv(n_bytes)
         return data.decode()
 
     def send_str(self, value: str) -> None:
         """
-        :param value: The string value to send to the current connection
+        Protocolo de comunicação para enviar uma string.
+        :param value: str - valor
+        :return: None
         """
         self._current_connection.send(value.encode())
 
     def send_obj(self, value: object, n_bytes: int) -> None:
+        """
+        Protocolo de comunicação para enviar um objeto.
+        :param value: object - valor
+        :param n_bytes:  int - número de bytes
+        :return:  None
+        """
         msg = json.dumps(value)
         size = len(msg)
         self.send_int(size, n_bytes)
         self.send_str(msg)
 
     def receive_obj(self, n_bytes: int) -> object:
+        """
+        Protocolo de comunicação para receber um objeto.
+        :param n_bytes: int - número de bytes
+        :return: object - objeto
+        """
         size = self.receive_int(n_bytes)
         obj = self.receive_str(size)
         return json.loads(obj)
 
-
     def close(self):
+        """
+        Fecha a ligação.
+        :return: None
+        """
         self._current_connection.close()
         self._current_connection = None
 
     def server_connect(self) -> tuple:
+        """
+        Conecta-se ao servidor.
+        :return: tuple - ligação, endereço
+        """
         connection, address = self._current_connection.accept()
         return Socket(connection, self._port), address
 
-    #    def __enter__(self):
-    #        return self
-
-    #    def __exit__(self, exc_type, exc_val, exc_tb):
-    #        self.close()
-
     @staticmethod
     def create_server_connection(host: str, port: int):
+        """
+        Cria uma ligação com o servidor.
+        :param host: str - endereço
+        :param port: int - porta
+        :return: Socket - ligação
+        """
         connection = socket.socket()
         connection.bind((host, port))
         connection.listen(1)
@@ -91,18 +144,12 @@ class Socket:
 
     @staticmethod
     def create_client_connection(host: str, port: int):
+        """
+        Cria uma ligação com o cliente.
+        :param host: str - endereço
+        :param port: int - porta
+        :return: Socket - ligação
+        """
         connection = socket.socket()
         connection.connect((host, port))
         return Socket(connection, port)
-
-    #def bind(self) -> None:
-    #    # Connecting as a server
-    #    self._s = socket.socket()
-    #    self._s.bind(('', self._port))
-
-    #def listen(self) -> None:
-    #    self._s.listen(1)
-
-# def connect(self) -> None:
-#     self._current_connection = socket.socket()
-#     self._current_connection.connect((self._host, self._port))

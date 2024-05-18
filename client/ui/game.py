@@ -9,53 +9,78 @@ from stub.client_stub import ClientStub
 
 
 class Game(object):
+    """
+    Classe Game que representa o jogo.
+
+    Atributos:
+        client_stub: ClientStub - o stub do cliente
+        height: int - a altura do ecrã
+        width: int - a largura do ecrã
+        screen: Surface - o ecrã
+        background: Surface - o fundo do ecrã
+        grid_surface: Surface - a grelha do ecrã
+        grid_size: int - o tamanho do quadrante
+        clock: Clock - o relógio do jogo
+        eggs: LayeredDirty - os ovos
+        bushes: Group - os arbustos
+        grass: Group - a erva
+        players: LayeredDirty - os jogadores
+        id: int - o id do jogador
+
+    Métodos:
+        game_settings: None - configurações do jogo
+        sound_effect: None - toca um efeito sonoro
+        draw_text: None - renderiza um texto no ecrã
+        draw_panel: None - desenha um painel no ecrã
+        draw_scoreboard: None - desenha o painel de pontuação
+        draw_timer: None - desenha o painel do tempo
+        draw_grid: None - desenha a grelha no ecrã
+        create_bushes: None - cria arbustos no ecrã
+        create_grass: None - cria erva no ecrã
+        create_players: None - cria um jogador
+        update_eggs: None - atualiza a posição dos ovos
+        check_collisions: None - verifica se houve colisões entre os jogadores e os ovos
+        get_egg: Egg | None - obtém um ovo através do seu id
+        start_game: None - inicia o jogo
+        get_objects: None - obtém os objetos
+        update_objects: None - atualiza os objetos
+        run: None - inicia o jogo
+    """
 
     def __init__(self, client_sub: ClientStub, grid_size: int):
+        """
+        Inicializa um objeto Game.
+        :param client_sub: ClientStub - o stub do cliente
+        :param grid_size: int - o tamanho do quadrante
+        """
+        self.client_stub: ClientStub = client_sub
         # Screen and background
-        self.width = None
-        self.height = None
-        self.client_stub = client_sub
-        self.screen: None = None
-        self.background: None = None
-        # Clock
-        self.clock: None = None
+        self.height: int = self.client_stub.get_nr_quad_y() * grid_size
+        self.width: int = self.client_stub.get_nr_quad_x() * grid_size
+        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.background: pygame.Surface = pygame.Surface(self.screen.get_size())
+        self.background: pygame.Surface = self.background.convert()
+        game_icon = pygame.image.load(GAME_ICON)
+        pygame.display.set_icon(game_icon)
         # Grid
-        self.grid_size: None = None
-        self.grid_surface: None = None
-        self.game_settings(grid_size)
+        self.grid_surface: pygame.Surface = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        self.grid_surface.fill(TRANSPARENT)
+        self.grid_size: int = grid_size
+        self.draw_grid(self.grid_surface, self.width, self.height, self.grid_size, (2, 150, 72))
+        # Name of the game
+        pygame.display.set_caption("Hop to It!")
+        # Clock
+        self.clock: pygame.time.Clock = pygame.time.Clock()
+        # Music
+        # pygame.mixer.init()
+        # self.sound_effect(GAME_MUSIC, 0.2, -1, CHANNEL_MUSIC)
         # Other attributes
         self.eggs: pygame.sprite.LayeredDirty = pygame.sprite.LayeredDirty()
         self.bushes: pygame.sprite.Group = pygame.sprite.Group()
         self.grass: pygame.sprite.Group = pygame.sprite.Group()
         self.players: pygame.sprite.LayeredDirty = pygame.sprite.LayeredDirty()
+        self.id: int | None = None
         pygame.display.update()
-
-    def game_settings(self, grid_size: int):
-        """
-        Configurações do jogo
-        :param grid_size: tamanho do quadrante
-        :return:
-        """
-        # Screen and background
-        self.height: int = self.client_stub.get_nr_quad_y() * grid_size
-        self.width: int = self.client_stub.get_nr_quad_x() * grid_size
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        self.background = pygame.Surface(self.screen.get_size())
-        self.background = self.background.convert()
-        game_icon = pygame.image.load(GAME_ICON)
-        pygame.display.set_icon(game_icon)
-        # Grid
-        self.grid_surface = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
-        self.grid_surface.fill(TRANSPARENT)
-        self.grid_size = grid_size
-        self.draw_grid(self.grid_surface, self.width, self.height, self.grid_size, (2, 150, 72))
-        # Name of the game
-        pygame.display.set_caption("Hop to It!")
-        # Clock
-        self.clock = pygame.time.Clock()
-        # Music
-        # pygame.mixer.init()
-        # self.sound_effect(GAME_MUSIC, 0.2, -1, CHANNEL_MUSIC)
 
     @staticmethod
     def sound_effect(music: str, volume: float, repeat: int, channel: int) -> None:
@@ -67,8 +92,8 @@ class Game(object):
         :param channel: canal onde o som é tocado
         :return: None
         """
-        channel = pygame.mixer.Channel(channel)
-        sound = pygame.mixer.Sound(music)
+        channel: pygame.mixer.Channel = pygame.mixer.Channel(channel)
+        sound: pygame.mixer.Sound = pygame.mixer.Sound(music)
         channel.set_volume(volume)
         channel.play(sound, loops=repeat)
 
@@ -144,16 +169,8 @@ class Game(object):
         for x in range(0, self.width, bush_size):
             for y in range(0, self.height, bush_size):
                 if x in (0, self.width - bush_size) or y in (0, self.height - bush_size):
-                    arbusto = bush.Bush(x, y, 0, bush_size, self.bushes)
+                    arbusto: bush.Bush = bush.Bush(x, y, 0, bush_size, self.bushes)
                     self.bushes.add(arbusto)
-
-    # def create_bushes(self, bush_size: int) -> None:
-    #     arbustos = self.client_stub.get_bushes()
-    #     for arbusto in arbustos.values():
-    #         x, y = arbusto[1]
-    #         print(x, y)
-    #         novo_arbusto = bush.Bush(x, y, 0, bush_size, self.bushes)
-    #         self.bushes.add(novo_arbusto)
 
     def create_grass(self, grass_size: int) -> None:
         """
@@ -163,7 +180,7 @@ class Game(object):
         """
         for x in range(0, self.width, grass_size):
             for y in range(0, self.height, grass_size):
-                erva = grass.Grass(x, y, grass_size, self.grass)
+                erva: grass.Grass = grass.Grass(x, y, grass_size, self.grass)
                 self.grass.add(erva)
 
     def create_players(self, size: int) -> None:
@@ -174,50 +191,24 @@ class Game(object):
         """
         name: str = str(input("Qual é o teu nome? "))
         pos, skin, player_id = self.client_stub.set_player(name)
+        self.id: int = player_id
         player: Player = Player(pos[0], pos[1], size, player_id, name, skin, self.players)
         self.players.add(player)
         self.client_stub.add_player(name, player_id, pos, 0, skin)
 
-    # def create_eggs(self, egg_size: int) -> None:
-    #     """
-    #     Método para criar ovos
-    #     :param egg_size: tamanho do ovo
-    #     :return: None
-    #     """
-    #     number_eggs = self.client_stub.get_nr_eggs()
-    #     for _ in range(number_eggs):
-    #         new_id = 0
-    #         if self.eggs:
-    #             new_id = max([ovo.get_id() for ovo in self.eggs]) + 1
-    #         pos_x, pos_y = self.client_stub.calculate_egg_spawn()
-    #         skin, value = self.client_stub.determine_egg()
-    #         new_egg = egg.Egg(pos_x, pos_y, egg_size, skin, new_id, value, self.eggs)
-    #         self.eggs.add(new_egg)
-    #         self.client_stub.add_egg(new_id, (pos_x, pos_y), value)
-
-    def update_eggs(self):
+    def update_eggs(self) -> None:
         """
         Atualiza a posição dos ovos
         :return: None
         """
         self.eggs.empty()
-        ovos = self.client_stub.update_eggs()
+        ovos: dict = self.client_stub.update_eggs()
         for egg_id, egg_pos, egg_value, skin in ovos.values():
             new_egg = egg.Egg(egg_pos[0], egg_pos[1], self.grid_size, skin, egg_id, egg_value, self.eggs)
             self.eggs.add(new_egg)
         self.eggs.update(self, self.client_stub)
         rect_1 = self.eggs.draw(self.screen)
         pygame.display.update(rect_1)
-
-    # def update_players(self):
-    #     server_players = self.client_stub.get_all_players()
-    #     for id, name, pos, score, skin in server_players.values():
-    #         player: Player = Player(pos[0], pos[1], self.grid_size, id, name, skin, self.players)
-    #         self.players.add(player)
-    #         self.client_stub.add_player(name, id, pos, 0, skin)
-    #     self.players.update(self, self.client_stub)
-    #     rect_2 = self.players.draw(self.screen)
-    #     pygame.display.update(rect_2)
 
     def check_collisions(self) -> None:
         """
@@ -242,8 +233,35 @@ class Game(object):
                 return ovo
         return None
 
-    # def start_game(self):
-    #     return bool(self.client_stub.execute_start_game())
+    def start_game(self) -> bool:
+        """
+        Inicia o jogo
+        :return: True se o jogo foi iniciado, False caso contrário
+        """
+        return bool(self.client_stub.execute_start_game())
+
+    def get_objects(self, size) -> None:
+        """
+        Obtém os objetos do jogo
+        :param size: tamanho do objeto
+        :return: None
+        """
+        objects: dict = self.client_stub.get_objects()
+        for object_id in objects:
+            if int(object_id) != self.id:
+                player = Player(objects[object_id][1][0], objects[object_id][1][1], size, int(object_id),
+                                objects[object_id][0], objects[object_id][4], self.players)
+                self.players.add(player)
+
+    def update_objects(self) -> None:
+        """
+        Atualiza os objetos
+        :return: None
+        """
+        objects = self.client_stub.get_objects()
+        for player in self.players:
+            if player.get_id() != self.id:
+                player.set_rect(objects[str(player.get_id())][1])
 
     def run(self) -> None:
         """
@@ -254,8 +272,9 @@ class Game(object):
         self.create_players(self.grid_size)
         self.create_grass(self.grid_size)
 
-        end_game = False
-        # self.start_game()
+        end_game: bool = False
+        self.start_game()
+        self.get_objects(self.grid_size)
 
         while not end_game:
             dt = self.clock.tick(GAME_TICK)
@@ -265,19 +284,16 @@ class Game(object):
             self.grass.draw(self.screen)
             self.bushes.update(dt)
             self.bushes.draw(self.screen)
-
             self.players.update(self, self.client_stub)
+            self.update_objects()
             rects = self.players.draw(self.screen)
-
             self.screen.blit(self.grid_surface, (0, 0))
-
             self.update_eggs()
             self.check_collisions()
             if self.client_stub.winner() != "False":
+                print(self.client_stub.winner())
                 end_game = True
             self.draw_scoreboard()
-
             self.draw_timer()
             pygame.display.update(rects)
-
         return None
