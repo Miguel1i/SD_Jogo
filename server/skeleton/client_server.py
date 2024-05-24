@@ -93,7 +93,7 @@ class ClientThread(Thread):
         (o pedido não se encontra protegido por mutex pois ambos os clientes têm que receber a mesma informação ao mesmo tempo)
         :return: None
         """
-        winner: str = self.gamemech.winner()
+        winner: str = self.shared_state.winner()
         self.current_connection.send_int(getsizeof(winner), server.INT_SIZE)
         self.current_connection.send_str(winner)
 

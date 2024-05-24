@@ -165,3 +165,12 @@ class ServerSharedState:
         with self.connections_lock:
             res: dict = self.gamemech.update_eggs()
         return res
+
+    def winner(self) -> str:
+        """
+        Obtém o vencedor do jogo.
+        :return: str - vencedor
+        """
+        with self.connections_lock:
+            res: str = self.gamemech.winner()
+        return res
