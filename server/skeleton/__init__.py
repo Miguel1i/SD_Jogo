@@ -3,7 +3,7 @@ BYE_OP: str = "bye     "
 STOP_SERVER_OP: str = "stop    "
 
 # Connection
-PORT: int = 35000
+PORT: int = 8000
 SERVER_ADDRESS: str = "localhost"
 
 # Constants

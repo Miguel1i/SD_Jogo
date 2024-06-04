@@ -90,7 +90,6 @@ class ClientThread(Thread):
     def process_winner(self) -> None:
         """
         Processa um pedido para obter o vencedor.
-        (o pedido não se encontra protegido por mutex pois ambos os clientes têm que receber a mesma informação ao mesmo tempo)
         :return: None
         """
         winner: str = self.shared_state.winner()

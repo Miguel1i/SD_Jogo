@@ -18,5 +18,5 @@ START_GAME: str = "start   "
 STEP_OP: str = "step    "
 GET_OBJECTS: str = "get_obj "
 # Connection
-PORT: int = 35000
+PORT: int = 8000
 SERVER_ADDRESS: str = "localhost"
